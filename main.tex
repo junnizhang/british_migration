@@ -67,14 +67,14 @@ Population at risk is generally large, with a minimum value of 1,749 and a maxim
 The data on internal migration counts show some sparsity. There are 1,562 cells (0.9\%) with internal migration counts equal to zero, and 25,350 cells (14.9\%) with internal migration counts below 10.
 
 \begin{figure}[htp]
-\includegraphics[width = \textwidth]{figures/fig_orig_dest_direct_selected_2016}
+\includegraphics[width = \textwidth]{figures/fig_direct_age_2016}
   \centering
   \caption{Direct estimates of migration rates, by region of origin, region of destination, age and sex for selected regions in 2016. Each row represents one origin region and each column represents one destination region.}\label{fig:direct_2016}  \end{figure}
   
 Figure~\ref{fig:direct_2016} displays direct estimates of migration rates by region of origin, region of destination, age, and sex for selected regions in 2016. The age profiles show dramatic differences across origin-destination pairs. For instance, migration from other regions to London peaks at age 22–23, whereas migration from London to other regions peaks at age 19. The sharp spikes around age 19 mainly reflect migration for tertiary education. Migration from London to the South East shows an increase at the highest ages, whereas migration from London to Yorkshire and the Humber does not have this pattern. There is also heterogeneity in age profiles between females and males across origin-destination pairs. For instance, between ages 19 and 25, migration rates from the East of England to London are higher for females than for males. However, there is only a slight difference in the age profiles between females and males for migration from the East of England to Yorkshire and the Humber.
 
 \begin{figure}[htp]
-\includegraphics[width = \textwidth]{figures/fig_orig_dest_direct_selected_2021}
+\includegraphics[width = \textwidth]{figures/fig_direct_age_2021}
   \centering
   \caption{Direct estimates of migration rates, by region of origin, region of destination, age and sex for selected regions in 2021. Each row represents one origin region and each column represents one destination region.}\label{fig:direct_2021}  \end{figure}
 
@@ -83,7 +83,7 @@ Figure~\ref{fig:direct_2021} displays information similar to that in Figure~\ref
 Figure~\ref{fig:summary_direct} displays direct estimates of migration rates by region of origin, region of destination, sex, and calendar year for selected regions, for which migration counts and population at risk have been aggregated over age. The effect of the COVID-19 pandemic is visible in most of the series, with a dip in migration during 2020 and a surge in migration during the years that followed. However, there is heterogeneity in time trends across origin-destination pairs. For example, migration rates from London to the East of England show the following trend: slow increase, then flat, then a sharp increase followed by a sharp decrease, then flat again. Migration from London to the South East follows a similar pattern, but with greater fluctuations. Migration rates from London to Yorkshire and the Humber, however, remain almost flat throughout the entire period. There is only a small difference in time trends between sexes for some origin-destination pairs.
 
  \begin{figure}[htp]
-\includegraphics[width = \textwidth]{figures/fig_orig_dest_summary_direct_selected}
+\includegraphics[width = \textwidth]{figures/fig_direct_time}
   \centering
   \caption{Direct estimates of migration rates, by region of origin, region of destination, and calendar year for selected regions. Each row represents one origin region and each column represents one destination region.}\label{fig:summary_direct}   
 %\vspace{1ex}
@@ -306,7 +306,12 @@ WAIC=-2(\text{computed}\ lppd-\text{computed}\ p_{WAIC}).
 \end{equation}
 We select the model with the smaller WAIC.
 
+\input{tables/tab_waic_all}
+
 The WAIC values are 8658.2 for the baseline model, 7986.9 for the first expanded model, and 7959.3 for the second expanded model. The second expanded model (with two four-way interaction terms) is preferred.
+
+{\color{cyan} The WAIC values have changed a lot. I'm not sure why. I got Cursor to check my calculations.}
+
 
 We also subject each model to a replicate data test, also known as a posterior predictive check. In the replicate data test, we use 1,000 posterior samples of $\mu_{ijast}$ and $\xi$. Conditional on each such posterior sample, we first generate $\gamma_{ijast}$ from \eqref{eq:priormod1}, and then generate a replicated dataset 
 $\{y_{ijast}^{rep}\}$ from \eqref{eq:poisson}. For each combination of origin, destination, sex, and time, we calculate the minimum, maximum, mean, and standard deviation of the direct estimates (migration counts divided by population at risk) across age. We then compare these statistics between the replicated datasets and the original data. 
@@ -314,24 +319,26 @@ $\{y_{ijast}^{rep}\}$ from \eqref{eq:poisson}. For each combination of origin, d
 For a given statistic (minimum, maximum, mean, or standard deviation of the direct estimates across age) and for each combination of origin, destination, sex, and time, the posterior predictive $p$-value is defined as the proportion of replicated datasets for which the statistic exceeds the statistic computed from the observed data. For each statistic, we then calculate, across all combinations of origin, destination, sex, and time, the proportion of combinations for which the posterior predictive 
 $p$-value is less than 0.05 or greater than 0.95. If the model fits the observed data well, the posterior predictive p-value is sometimes uniformly distributed, but generally tends to be more concentrated around 0.5 than a uniform distribution. Therefore, for a good model, the proportion of combinations for which the posterior predictive p-value is less than 0.05 or greater than 0.95 should be around 10\% or less.
 
-Table~\ref{tab:proportions} presents these proportions for the three models. The second expanded model is preferred according to the replicate data test.
+Table~\ref{tab:ppc} presents these proportions for the three models. The second expanded model is preferred according to the replicate data test.
 
-\begin{table}[ht]
-\centering
-\caption{Proportion of statistics from replicate data tests outside the 0.05--0.95 range.}
-\label{tab:proportions}
-\begin{tabular}{lrrrr}
-\hline
-Model & Minimum & Maximum & Mean & SD \\
-\hline
-Baseline model         & 16.6\% & 28.4\% & 34.3\% & 44.6\% \\
-First expanded model   & 14.5\% & 12.8\% & 23.6\% & 25.2\% \\
-Second expanded model  & 14.5\% &  4.1\% & 12.4\% &  7.9\% \\
-\hline
-\end{tabular}
-\end{table}
+\input{tables/tab_ppc_all}
+
+
+
+
 
 To summarize, both the WAIC criterion and the replicate data test support the second expanded model that captures complicated patterns in the observed data.
+
+{\color{cyan}Figure~\ref{fig:heldback_main} shows results from our heldback data tests. There are some more results in Figure~\ref{fig:heldback_appendix} in the Appendix.}
+
+ \begin{figure}[ht]
+\includegraphics[width = \textwidth]{figures/fig_heldback_main}
+  \centering
+  \caption{Some heldback data results}
+    \label{fig:heldback_main}  
+\end{figure}
+
+
  
 \section{Estimates and Forecasts of Internal Migration Rates}
 
@@ -339,25 +346,32 @@ We use the second expanded model to forecast internal migration rates for years 
 $\beta_{jt}^{\text{dest:time}}$ and $\beta_{ijat}^{\text{orig:dest:age:time}}$), and then combines the results with estimates for the non-time-varying terms to generate values for the remaining unknowns. The calculations are done separately for each of the 1,000 draws from the posterior distribution for the parameter estimates, which allows uncertainty in the estimates to be propagated through to the forecasts.
 
  \begin{figure}[ht]
-\includegraphics[width = \textwidth]{figures/fig_forecast_London_SE}
+\includegraphics[width = \textwidth]{figures/fig_forecast_london_se}
   \centering
-  \caption{Estimates and forecasts of migration rates from London to the South East. The solid lines represent point estimates, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_London_SE}  
+  \caption{Estimates and forecasts of migration rates from London to the South East. The solid lines represent point estimates, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_london_se}  
 \end{figure}
 
  \begin{figure}[ht]
-\includegraphics[width = \textwidth]{figures/fig_forecast_SE_London}
+\includegraphics[width = \textwidth]{figures/fig_forecast_se_london}
   \centering
-  \caption{Estimates and forecasts of migration rates from the South East to London. The solid lines represent point estimates, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_SE_London}  
+  \caption{Estimates and forecasts of migration rates from the South East to London. The solid lines represent point estimates, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_se_london}  
 \end{figure}
 
  \begin{figure}[ht]
-\includegraphics[width = \textwidth]{figures/fig_forecast_London_NE}
+\includegraphics[width = \textwidth]{figures/fig_forecast_london_ne}
   \centering
-  \caption{Estimates and forecasts of migration rates from London to the North East. The solid lines represent point estimates, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_London_NE}  
+  \caption{Estimates and forecasts of migration rates from London to the North East. The solid lines represent point estimates, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_london_ne}  
 \end{figure}
 
-As an illustration, Figure~\ref{fig:forecast_London_SE}, Figure~\ref{fig:forecast_SE_London} and Figure~\ref{fig:forecast_London_NE} show, respectively, estimates and forecasts of migration rates from London to the South East, from the South East to London, and from London to the North East. For the first two origin-destination pairs, the migration counts are not sparse. The modeled estimates track the direct estimates well. For the last origin-destination pair, the migration counts are rather sparse. In the observed data, there are 129 cells with zero migration counts from London to the North East. The modeled estimates appear to do a good job of separating signal and noise. In all three figures, the forecasts capture the changes in age profiles over time for each origin-destination pair.
+As an illustration, Figure~\ref{fig:forecast_london_se}, Figure~\ref{fig:forecast_se_london} and Figure~\ref{fig:forecast_london_ne} show, respectively, estimates and forecasts of migration rates from London to the South East, from the South East to London, and from London to the North East. For the first two origin-destination pairs, the migration counts are not sparse. The modeled estimates track the direct estimates well. For the last origin-destination pair, the migration counts are rather sparse. In the observed data, there are 129 cells with zero migration counts from London to the North East. The modeled estimates appear to do a good job of separating signal and noise. In all three figures, the forecasts capture the changes in age profiles over time for each origin-destination pair.
 \clearpage
+
+{\color{cyan} Table~\ref{tab:hyper} shows estimates of hyper-parameters bla bla bla}
+
+\input{tables/tab_hyper_all}
+
+
+
 \section{Conclusion}
 
 %Internal migration is important for understanding sub-national population changes, but modeling and forecasting internal migration rates are difficult due to heterogeneity and sparsity in the data. 
@@ -389,5 +403,14 @@ The properties of the Poisson, Gamma, and Negative Binomial distributions imply 
 \begin{equation}
   \gamma_{ijast} \mid y_{ijast}, w_{iast}, \mu_{ijast}, \xi \sim \text{Gamma}\left(y_{ijast} + \xi^{-1}, w_{iast} + (\xi \mu_{ijast})^{-1}\right).
 \end{equation}
+
+
+ \begin{figure}[ht]
+\includegraphics[width = \textwidth]{figures/fig_heldback_appendix}
+  \centering
+  \caption{Some more heldback data results}
+    \label{fig:heldback_appendix}  
+\end{figure}
+
 
 \end{document}
