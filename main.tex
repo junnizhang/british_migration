@@ -287,6 +287,7 @@ Fitting the baseline model on an Intel Core i9 laptop, and obtaining 1,000 poste
 
 \section{Model Selection and Model Checking}
 
+\subsection{WAIC}
 
 To perform model selection among the baseline model and the expanded models, we use
  the Watanabe-Akaike or Widely Applicable Information Criterion (WAIC) \citep{watanabe2010asymptotic}. As pointed out by Section 7.2 of \cite{Gelman2014bayesian}, compared to other information criteria that condition on a point estimate, WAIC has the desirable property of averaging over the posterior distribution, which is more compatible with Bayesian model selection.
@@ -312,6 +313,7 @@ The WAIC values are 8658.2 for the baseline model, 7986.9 for the first expanded
 
 {\color{cyan} The WAIC values have changed a lot. I'm not sure why. I got Cursor to check my calculations.}
 
+\subsection{Replicate data test}
 
 We also subject each model to a replicate data test, also known as a posterior predictive check. In the replicate data test, we use 1,000 posterior samples of $\mu_{ijast}$ and $\xi$. Conditional on each such posterior sample, we first generate $\gamma_{ijast}$ from \eqref{eq:priormod1}, and then generate a replicated dataset 
 $\{y_{ijast}^{rep}\}$ from \eqref{eq:poisson}. For each combination of origin, destination, sex, and time, we calculate the minimum, maximum, mean, and standard deviation of the direct estimates (migration counts divided by population at risk) across age. We then compare these statistics between the replicated datasets and the original data. 
@@ -323,22 +325,21 @@ Table~\ref{tab:ppc} presents these proportions for the three models. The second 
 
 \input{tables/tab_ppc_all}
 
+\subsection{Held-back data tests}
 
 
-
-
-To summarize, both the WAIC criterion and the replicate data test support the second expanded model that captures complicated patterns in the observed data.
 
 {\color{cyan}Figure~\ref{fig:heldback_main} shows results from our heldback data tests. There are some more results in Figure~\ref{fig:heldback_appendix} in the Appendix.}
 
  \begin{figure}[ht]
-\includegraphics[width = \textwidth]{figures/fig_heldback_main}
+\includegraphics[width = \textwidth]{figures/fig_heldback}
   \centering
   \caption{Some heldback data results}
-    \label{fig:heldback_main}  
+    \label{fig:heldback}  
 \end{figure}
 
 
+To summarize, both the WAIC criterion and the replicate data test support the second expanded model that captures complicated patterns in the observed data.
  
 \section{Estimates and Forecasts of Internal Migration Rates}
 
