@@ -71,6 +71,11 @@ Norton, R.~A., Christen, J.~A., and Fox, C. (2018).
 \newblock Sampling hyperparameters in hierarchical models: Improving on {G}ibbs for high-dimensional latent fields and large datasets.
 \newblock {\em Communications in Statistics-Simulation and Computation}, 47(9):2639--2655.
 
+\bibitem[{Office for National Statistics}, 2024]{ons2024regions}
+{Office for National Statistics} (2024).
+\newblock Regions (december 2024) boundaries en buc.
+\newblock Ultra-generalised (500 m) boundaries for England. Licensed under the Open Government Licence v3.0.
+
 \bibitem[{Office for National Statistics}, 2025a]{ons2025population}
 {Office for National Statistics} (2025a).
 \newblock Estimates of the population for england and wales.

@@ -63,6 +63,8 @@ The remaining parts of the paper are organized as follows. Section 2 presents th
 \section{Data}\label{sec:data}
 Our data consist of counts of internal migration and population size by single year of age (up to age 90+), sex, region of origin, region of destination, and calendar year for the period 2012–2024. The data were obtained from the Office for National Statistics website \citep{ons2025internalmigration,ons2025population}. There are 9 regions: London, East of England (shortened to ``E"), North East (``NE"), North West (``NW"), South East (``SE"), South West (``SW"), East Midlands (``EM"), West Midlands (``WM"), and Yorkshire and The Humber (``YH"). Since internal migration requires a change of region, region of destination cannot equal region of origin. Altogether, there are 170,352 (91$\times$2$\times$9$\times$8$\times$13) cells. 
 
+{\color{cyan} A map of the 9 regions is Figure~\ref{fig:map_england} in the Appendix.}
+
 Population at risk is generally large, with a minimum value of 1,749 and a maximum value of 91,340.
 The data on internal migration counts show some sparsity. There are 1,562 cells (0.9\%) with internal migration counts equal to zero, and 25,350 cells (14.9\%) with internal migration counts below 10.
 
@@ -329,7 +331,7 @@ Table~\ref{tab:ppc} presents these proportions for the three models. The second 
 
 
 
-{\color{cyan}Figure~\ref{fig:heldback_main} shows results from our heldback data tests. There are some more results in Figure~\ref{fig:heldback_appendix} in the Appendix.}
+{\color{cyan}Figure~\ref{fig:heldback} shows results from our heldback data tests.}
 
  \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_heldback}
@@ -339,7 +341,13 @@ Table~\ref{tab:ppc} presents these proportions for the three models. The second 
 \end{figure}
 
 
-To summarize, both the WAIC criterion and the replicate data test support the second expanded model that captures complicated patterns in the observed data.
+ To summarize, both the WAIC criterion and the replicate data test support the second expanded model that captures complicated patterns in the observed data.
+
+
+ \subsection{Sensitivity test}
+
+\input{tables/tab_sensitivity_all}
+ 
  
 \section{Estimates and Forecasts of Internal Migration Rates}
 
@@ -407,10 +415,10 @@ The properties of the Poisson, Gamma, and Negative Binomial distributions imply 
 
 
  \begin{figure}[ht]
-\includegraphics[width = \textwidth]{figures/fig_heldback_appendix}
+\includegraphics[width = 0.5\textwidth]{figures/fig_map_england}
   \centering
-  \caption{Some more heldback data results}
-    \label{fig:heldback_appendix}  
+  \caption{The regions of England. Source: \citet{ons2024regions}.}
+    \label{fig:map_england}  
 \end{figure}
 
 
