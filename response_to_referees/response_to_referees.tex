@@ -50,7 +50,9 @@ The methodological contribution and the gap in the existing literature need to b
 The treatment of high dimensionality, regularization, and shrinkage requires a substantially deeper explanation. The most complex specification contains 121,379 $\beta$ parameters, in addition to 170,352 cell-specific rate quantities. Given that the dataset itself contains 170,352 observed cells, the effective regularization of the model is central to its statistical credibility. Equation (3) gives a useful interpretation of shrinkage of the cell-specific rate $\gamma_{ijast}$ toward its prior mean $\mu_{ijast}$. However, this does not explain how the very large collection of $\beta$ parameters, including the high-order interactions, is regularized. My reading is that the principal mechanism is structured smoothing and partial pooling through Gaussian priors, shared variance parameters, and RW1/RW2 specifications. This should be made explicit. In particular, the current model does not appear to perform sparse shrinkage or interaction selection in the usual sense; instead, it allows all specified interactions to enter while controlling their roughness and magnitude through hierarchical priors. I suggest that the authors provide more evidence on the amount of regularization actually induced by the model. At minimum, posterior summaries of the major variance/smoothing parameters would be informative. Sensitivity to the half-normal hyperpriors would also be useful, especially for the high-order interaction terms. More generally, the authors should explain what prevents the most complex model from becoming a near-saturated smoother and should quantify, where possible, the effective complexity of the higher-order components. This issue is particularly important because the model-comparison procedure favors progressively richer interaction structures.
 }
 \begin{response}
-% Write your response here.
+  {\color{cyan} We have added estimates of hyper-parameters and sensitivity tests.}
+
+  
 
 \end{response}
 
@@ -241,7 +243,7 @@ When presenting the main geographical areas used to compute the internal migrati
 }
 \begin{response}
 % Write your response here.
-
+{\color{cyan} Map added in appendix}
 \end{response}
 
 \refcomment{Comment 4}{
@@ -258,7 +260,7 @@ I did not understand the rationale behind considering the period 2012--2024. Is 
 I would suggest reconsidering the background used in the figures. Rather than the current gray background, I would personally opt for a white background, which I find cleaner and more visually appealing and which may also improve readability.
 }
 \begin{response}
-  We have changed the plots to use a white background.
+{\color{cyan}  We have changed the plots to use a white background.}
 \end{response}
 
 \refcomment{Comment 6}{
@@ -294,7 +296,7 @@ I believe that the model-checking analysis has been conducted very rigorously, a
 }
 \begin{response}
 % Write your response here.
-
+{\color{cyan} We have added heldback data tests}
 \end{response}
 
 \refcomment{Comment 10}{
@@ -312,7 +314,7 @@ Again with reference to Figures 4-6, I would recommend displaying the 95\% credi
 }
 \begin{response}
 % Write your response here.
-
+{\color{cyan} Credible intervals have been included, but are very narrow, so not visible.}
 \end{response}
 
 \refcomment{Comment 12}{
@@ -321,7 +323,7 @@ I believe that presenting three origin--destination combinations in the main man
 }
 \begin{response}
 % Write your response here.
-
+{\color{cyan} Plots of forecasted values for 2030 for all combinations of origin and destination included in Appendix}
 \end{response}
 
 \refcomment{Comment 13}{

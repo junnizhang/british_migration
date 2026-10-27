@@ -346,7 +346,8 @@ Table~\ref{tab:ppc} presents these proportions for the three models. The second 
 
  \subsection{Sensitivity test}
 
-\input{tables/tab_sensitivity_all}
+{\color{cyan} See figures~\ref{fig:sensitivity_female} and \ref{fig:sensitivity_male} in the Appendix}
+
  
  
 \section{Estimates and Forecasts of Internal Migration Rates}
@@ -374,6 +375,8 @@ $\beta_{jt}^{\text{dest:time}}$ and $\beta_{ijat}^{\text{orig:dest:age:time}}$),
 
 As an illustration, Figure~\ref{fig:forecast_london_se}, Figure~\ref{fig:forecast_se_london} and Figure~\ref{fig:forecast_london_ne} show, respectively, estimates and forecasts of migration rates from London to the South East, from the South East to London, and from London to the North East. For the first two origin-destination pairs, the migration counts are not sparse. The modeled estimates track the direct estimates well. For the last origin-destination pair, the migration counts are rather sparse. In the observed data, there are 129 cells with zero migration counts from London to the North East. The modeled estimates appear to do a good job of separating signal and noise. In all three figures, the forecasts capture the changes in age profiles over time for each origin-destination pair.
 \clearpage
+
+{\color{cyan} Figures~\ref{fig:forecast_od_female} and \ref{fig:forecast_od_male} in the Appendix show forecasts for all combinations of origin and destination in 2030.}
 
 {\color{cyan} Table~\ref{tab:hyper} shows estimates of hyper-parameters bla bla bla}
 
@@ -403,6 +406,13 @@ Bayesian models have a bad reputation among applied modelers for being slow. As 
 
 %\appendix
 
+ \begin{figure}[ht]
+\includegraphics[width = 0.5\textwidth]{figures/fig_map_england}
+  \centering
+  \caption{The regions of England. Source: \citet{ons2024regions}.}
+    \label{fig:map_england}  
+\end{figure}
+
 \section*{Appendix}
 The properties of the Poisson, Gamma, and Negative Binomial distributions imply that \eqref{eq:poisson} and \eqref{eq:priormod1} in the main text can be rewritten as
 \begin{equation}
@@ -413,12 +423,32 @@ The properties of the Poisson, Gamma, and Negative Binomial distributions imply 
   \gamma_{ijast} \mid y_{ijast}, w_{iast}, \mu_{ijast}, \xi \sim \text{Gamma}\left(y_{ijast} + \xi^{-1}, w_{iast} + (\xi \mu_{ijast})^{-1}\right).
 \end{equation}
 
+ \begin{figure}[ht]
+\includegraphics[width = 0.7\textwidth]{figures/fig_sensitivity_all_female}
+  \centering
+  \caption{Sensitivity test, females}
+    \label{fig:sensitivity_female}  
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[width = 0.7\textwidth]{figures/fig_sensitivity_all_male}
+  \centering
+  \caption{Sensitivity test, males}
+    \label{fig:sensitivity_male}  
+\end{figure}
 
  \begin{figure}[ht]
-\includegraphics[width = 0.5\textwidth]{figures/fig_map_england}
+\includegraphics[width = \textwidth]{figures/fig_forecast_od_female}
   \centering
-  \caption{The regions of England. Source: \citet{ons2024regions}.}
-    \label{fig:map_england}  
+  \caption{Forecasts for all origins and destinations, 2030, females}
+    \label{fig:forecast_od_female}  
+\end{figure}
+
+  \begin{figure}[ht]
+\includegraphics[width = \textwidth]{figures/fig_forecast_od_male}
+  \centering
+  \caption{Forecasts for all origins and destinations, 2030, males}
+    \label{fig:forecast_od_male}  
 \end{figure}
 
 
