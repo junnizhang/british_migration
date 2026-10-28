@@ -306,7 +306,7 @@ The priors for the main effects are the same as those in the previous three mode
 {\color{magenta}The expected rates $\mu_{ijast}$ are determined by the $\beta$ parameters. Because the Gamma prior for 
 $\gamma_{ijast}$ conditional on $\mu_{ijast}$ is conjugate to the Poisson likelihood for $y_{ijast}$ conditional on $\gamma_{ijast}$, we can marginalize over $\gamma_{ijast}$ during model fitting. This means that we can generate posterior draws of the $\beta$ parameters and hyper-parameters and then, conditional on these draws, generate posterior draws of $\gamma_{ijast}$. This is analogous to the marginalization strategy used in collapsed Gibbs sampling \citep{liu1994collapsed}. Details are provided in the Appendix.}
 
-{\color{magenta}Even after marginalizing over $\gamma_{ijast}$, the initial model and the two expanded models still contain a large number of $\beta$ parameters. Proper priors ensure a proper posterior, but identification of the $\beta$ parameters may still be weak. Fortunately, our focus is on the migration rates rather than on the $\beta$ parameters per se.} {\color{cyan}Hi Junni - do you mind if I merge some changes into the document now?}
+{\color{magenta}Even after marginalizing over $\gamma_{ijast}$, the initial model and the two expanded models still contain a large number of $\beta$ parameters. Proper priors ensure a proper posterior, but identification of the $\beta$ parameters may still be weak. Fortunately, our focus is on the migration rates rather than on the $\beta$ parameters per se.} 
 
 \subsection{Computation}
 
