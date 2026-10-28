@@ -14,7 +14,9 @@
 \usepackage{xcolor}
 
 
-\title{Bayesian Estimation and Forecasting of Internal Migration Rates: An Application to the UK}
+
+
+\title{Bayesian Estimation and Forecasting of Internal Migration Rates: An Application to England}
 
 \author[1]{Junni L. Zhang}
 \author[2]{John Bryant}
@@ -56,17 +58,23 @@ It is not easy to identify which features of historical trends in internal migra
 
 One way to extract complex signals from sparse, noisy datasets is to use Bayesian hierarchical models \citep{Gelman2014bayesian}. These models allow analysts to encode expectations about the qualitative behaviour of model components, through the use of prior distributions, and also to borrow strength across subgroups within the population, to cope with sparsity. Bayesian hierarchical models have been increasingly popular among researchers carrying out sub-national demographic estimation and forecasting \citep{lynch2010obtaining,schmertmann2013bayes,bijak2016bayesian,alexander2017flexible,bryant2018bayesian,wang2022spatiotemporal,dharamshi2025jointly}. There is a limited literature on Bayesian methods for modelling and forecasting internal migration \citep{wisniowski2014baysian,zhang2020bayesian,furfaro2021bayesian,goes2026probabilistic}.
 
-In this paper, we develop several Bayesian models that can capture complex patterns in internal migration, and apply them to estimate internal migration rates for the period 2012–2024 for the UK, disaggregated by single year of age, sex, region of origin and region of destination. We perform model selection and model checking, and then use the selected model to forecast internal migration rates over the period 2025–2030. An important part of our efficient computation builds on the ideas in \cite{liu2001monte}, and in particular on the collapsed Gibbs sampling in \cite{liu1994collapsed}.
+{\color{magenta}After more than a decade of effort, we have developed a flexible Bayesian hierarchical modeling framework for estimating and forecasting disaggregated demographic rates. We have also developed flexible and computationally efficient software for fitting, checking, and using these models. In this paper, we apply the framework to estimate internal migration rates in England from 2012 to 2024, disaggregated by single year of age, sex, and origin and destination region. Within this framework, we specify several models of increasing complexity. }
+{\color{yellow}In this paper, we develop several Bayesian models that can capture complex patterns in internal migration, and apply them to estimate internal migration rates for the period 2012–2024 for the UK, disaggregated by single year of age, sex, region of origin and region of destination.} We perform model selection and model checking, and then use the selected model to forecast internal migration rates over the period 2025–2030. {\color{magenta}Almost all computations were carried out using our software.}{\color{yellow}An important part of our efficient computation builds on the ideas in \cite{liu2001monte}, and in particular on the collapsed Gibbs sampling in \cite{liu1994collapsed}.}
 
 The remaining parts of the paper are organized as follows. Section 2 presents the UK internal migration data and patterns in the data. Section 3 discusses several Bayesian models and covers the computation. Section 4 then turns to model selection and model checking. Section 5 presents results on estimation and forecasting. Section 6 then concludes. All data and computer code for the analysis are available at [url for GitHub repository].
 
 \section{Data}\label{sec:data}
-Our data consist of counts of internal migration and population size by single year of age (up to age 90+), sex, region of origin, region of destination, and calendar year for the period 2012–2024. The data were obtained from the Office for National Statistics website \citep{ons2025internalmigration,ons2025population}. There are 9 regions: London, East of England (shortened to ``E"), North East (``NE"), North West (``NW"), South East (``SE"), South West (``SW"), East Midlands (``EM"), West Midlands (``WM"), and Yorkshire and The Humber (``YH"). Since internal migration requires a change of region, region of destination cannot equal region of origin. Altogether, there are 170,352 (91$\times$2$\times$9$\times$8$\times$13) cells. 
+Our data consist of counts of internal migration and population size by single year of age (up to age 90+), sex, region of origin, region of destination, and calendar year for the period 2012–2024. The data were obtained from the Office for National Statistics website \citep{ons2025internalmigration,ons2025population}{\color{magenta}; detailed internal migration data are available only for 2012–2024}. There are 9 regions {\color{magenta} in England}: London, East of England (shortened to ``E"), North East (``NE"), North West (``NW"), South East (``SE"), South West (``SW"), East Midlands (``EM"), West Midlands (``WM"), and Yorkshire and The Humber (``YH"). 
+{\color{magenta}Figure~\ref{fig:map_england} shows a map of these regions.}
+ \begin{figure}[htp]
+\includegraphics[width = 0.5\textwidth]{figures/fig_map_england}
+  \centering
+  \caption{The regions of England. Source: \citet{ons2024regions}.}
+    \label{fig:map_england}  
+\end{figure}
 
-{\color{cyan} A map of the 9 regions is Figure~\ref{fig:map_england} in the Appendix.}
-
-Population at risk is generally large, with a minimum value of 1,749 and a maximum value of 91,340.
-The data on internal migration counts show some sparsity. There are 1,562 cells (0.9\%) with internal migration counts equal to zero, and 25,350 cells (14.9\%) with internal migration counts below 10.
+Since internal migration requires a change of region, region of destination cannot equal region of origin. Altogether, there are 170,352 (91$\times$2$\times$9$\times$8$\times$13) cells. Population at risk is generally large, with a minimum value of 1,749 and a maximum value of 91,340.
+{\color{yellow}The data on internal migration counts show some sparsity.}{\color{magenta}The internal migration count data contain many low counts.} There are 1,562 cells (0.9\%) with internal migration counts equal to zero, and 25,350 cells (14.9\%) with internal migration counts below 10.
 
 \begin{figure}[htp]
 \includegraphics[width = \textwidth]{figures/fig_direct_age_2016}
@@ -94,14 +102,17 @@ Figure~\ref{fig:summary_direct} displays direct estimates of migration rates by 
 
 \section{Bayesian Models and Computation}
 
-\subsection{Baseline Model}
+\subsection{{\color{yellow}Baseline Model}{\color{magenta}Initial Model (Model 0)}}
+
 \subsubsection{Counts and Rates}
 Let $y_{ijast}$ denote migration counts from region $i$ ($i=1,\cdots,9$) to region $j$ ($j=1,\cdots,9$ and $j\neq i$) for age group $a$ ($a=1$ for age 0, $\cdots$, $a=91$ for age $90+$) and sex $s$ ($s=1$ for females and $s=0$ for males) during year $t$
-($t=1$ for 2012, $\cdots$, $t=13$ for 2024). Let $w_{iast}$ denote the population at risk for region $i$, age group $a$, sex $s$ in year $t$. We assume that, within each cell, migration counts follow a Poisson distribution,
+($t=1$ for 2012, $\cdots$, $t=13$ for 2024). Let $P_{iast}$ denote the population at risk for region $i$, age group $a$, sex $s$ in year $t$. We assume that{\color{yellow}, within each cell, migration counts} {\color{magenta}migration counts are independent across cells and that each migration count} follow a Poisson distribution,
 \begin{equation}
-y_{ijast}\sim\text{Poisson}(\gamma_{ijast}w_{iast}),\label{eq:poisson}
+y_{ijast}\sim\text{Poisson}(\gamma_{ijast}P_{iast}),\label{eq:poisson}
 \end{equation}
 where $\gamma_{ijast}$ is the underlying migration rate.
+
+{\color{magenta}This implies that, for a given origin–age–sex–year combination, the destination-specific migration counts are independent Poisson random variables with the same population at risk. This is equivalent to specifying a Poisson distribution for the total migration count from each origin–age–sex–year combination and then, conditional on this total, specifying a multinomial distribution for the counts across competing destinations.}
 
 We model $\gamma_{ijast}$ as a draw from a Gamma distribution, with expectation governed by $\mu_{ijast}$ and dispersion governed by $\xi$,
 \begin{equation}
@@ -141,24 +152,25 @@ $\beta^0\sim N(0,1)$. Since $\beta^0$ is common to all cells,  the information f
 
 The prior for the origin effect, $\beta_i^{\text{orig}}$, is a normal distribution,
 \begin{equation}
-\beta_i^{\text{orig}}\sim N(0,\tau_{\text{orig}}^2).
+\beta_i^{\text{orig}}\sim N(0,\sigma_{\text{orig}}^2).
 \end{equation}
-The standard deviation parameter $\tau_{\text{orig}}$ is shared across all regions, and is given a half-normal prior
-$\tau_{\text{orig}}\sim N^+(0,1).$ 
+The standard deviation parameter $\sigma_{\text{orig}}$ is shared across all regions.  {\color{magenta}It needs a prior itself. Here and elsewhere in the model we use weakly informative priors that set orders of magnitude rather than narrowly constraining results \citep[p. 55]{Gelman2014bayesian}. We assign $\sigma_{\text{orig}$}
+{\color{yellow}, and is given} a half-normal prior
+$\sigma_{\text{orig}}\sim N^+(0,1).$ 
 The prior for the destination effect, $\beta_j^{\text{dest}}$, is similar.
 
 The prior for the age effects, $\beta_a^{\text{age}}$, is a second order random walk (RW2),
 \begin{equation}
 \begin{aligned}
-\beta_1^{\text{age}}&=0,\\
+\beta_1^{\text{age}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1),\\
 \beta_2^{\text{age}}&\sim N(0,1),\\
-\beta_a^{\text{age}}&\sim N(2\beta_{a-1}^{\text{age}}-\beta_{a-2}^{\text{age}},\tau_{\text{age}}^2),\ a=3,\cdots,A,
+\beta_a^{\text{age}}&\sim N(2\beta_{a-1}^{\text{age}}-\beta_{a-2}^{\text{age}},\sigma_{\text{age}}^2),\ a=3,\cdots,A,
 \end{aligned}
 \end{equation}
 where $A=91$ is the number of age groups.
-The standard deviation parameter $\tau_{\text{age}}$ is given a half-normal prior $\tau_{\text{age}}\sim N(0,1).$
+The standard deviation parameter $\sigma_{\text{age}}$ is given a half-normal prior $\sigma_{\text{age}}\sim N(0,1).$
 
-The second-order random walk model was originally developed for modeling change over time. It implies a locally linear trend, where the slope  follows a random walk. This makes it suitable for time series where the underlying trend changes unpredictably. However, it works equally well for modeling change over age. As we can see from Section~\ref{sec:data}, age effects can also change unpredictably. Setting $\beta_1^{\text{age}}=0$ helps with identification.
+The second-order random walk model was originally developed for modeling change over time. It implies a locally linear trend, where the slope  follows a random walk. This makes it suitable for time series where the underlying trend changes unpredictably. However, it works equally well for modeling change over age. As we can see from Section~\ref{sec:data}, age effects can also change unpredictably. {\color{yellow}Setting $\beta_1^{\text{age}}=0$ helps with identification.}
 
 The prior for the sex effect, $\beta_s^{\text{sex}}$, is a standard normal distribution, $\beta_s^{\text{sex}}\sim N(0,1)$.
 
@@ -167,12 +179,12 @@ The prior for the time effect $\beta_t^{\text{time}}$ consists of a linear trend
 \begin{aligned}
 \beta_t^{\text{time}}&=\alpha_t^{\text{time}}+\kappa_t^{\text{time}},\\
 \alpha_t^{\text{time}}&=\left(t-\frac{T+1}{2}\right) \eta^{\text{time}},\\
-\kappa_t^{\text{time}}&\sim N(\phi_1\kappa_{t-1}^{\text{time}}+\phi_2\kappa_{t-2}^{\text{time}},\tau_{\text{time}}^2),
+\kappa_t^{\text{time}}&\sim N(\phi_1\kappa_{t-1}^{\text{time}}+\phi_2\kappa_{t-2}^{\text{time}},\sigma_{\text{time}}^2),
 \end{aligned}
 \end{equation}
 where $T=13$ is the number of years in the observed data. The trend terms sum to zero, $\sum_{t=1}^T\alpha_t^{\text{time}}=0$. The use of an AR2 prior for errors around the trend can capture reversion to the mean, but is also flexible enough to represent other patterns of errors.
 
-The parameters in the prior for the time effect themselves need priors. Here and elsewhere in the model we use weakly informative priors that set orders of magnitude rather than narrowly constraining results \citep[p. 55]{Gelman2014bayesian}. The value of the standard deviation $\tau_{\text{time}}$ in the AR2 prior is chosen so that each $\kappa_t^{\text{time}}$ has marginal distribution $\text{N}(0, \varphi_{\text{time}}^2)$, where 
+The parameters in the prior for the time effect themselves need priors. {\color{yellow}Here and elsewhere in the model we use weakly informative priors that set orders of magnitude rather than narrowly constraining results \citep[p. 55]{Gelman2014bayesian}.} The value of the standard deviation $\sigma_{\text{time}}$ in the AR2 prior is chosen so that each $\kappa_t^{\text{time}}$ has marginal distribution $\text{N}(0, \varphi_{\text{time}}^2)$, where 
 $\varphi_{\text{time}} \sim \text{N}^+(0,1)$. Values for $\kappa_1^{\mathcal{T}}$ and $\kappa_2^{\mathcal{T}}$ are generated through the Yule-Walker equations, which is the standard way of generating initial conditions in an auto-regressive process (\citealp[pp.~45--46]{prado2021time}; \citealp{tmb2025ar}). We use the prior
 \begin{equation}
   \frac{\phi_k + 1}{2} \sim \text{Beta}(5, 5), \quad k = 1, 2
@@ -182,45 +194,45 @@ for the autoregressive coefficients. This prior restricts the coefficients to va
 The prior for the origin-age interaction effect, $\beta_{ia}^{\text{orig:age}}$, is a region-specific first order random walk over age,
 \begin{equation}
 \begin{aligned}
-\beta_{i1}^{\text{orig:age}}&=0,\\
-\beta_{ia}^{\text{orig:age}}&\sim N(\beta_{i,a-1}^{\text{orig:age}},\tau_{\text{orig:age}}^2),\ a=2,\cdots,A.
+\beta_{i1}^{\text{orig:age}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1)},\\
+\beta_{ia}^{\text{orig:age}}&\sim N(\beta_{i,a-1}^{\text{orig:age}},\sigma_{\text{orig:age}}^2),\ a=2,\cdots,A.
 \end{aligned}
 \end{equation}
-The standard deviation parameter $\tau_{\text{orig:age}}$ is shared across all regions, and is given a half-normal prior $\tau_{\text{orig:age}}\sim N^+(0,1)$. The prior for the destination-age interaction effect, $\beta_{ja}^{\text{dest:age}}$, is similar.
+The standard deviation parameter $\sigma_{\text{orig:age}}$ is shared across all regions, and is given a half-normal prior $\sigma_{\text{orig:age}}\sim N^+(0,1)$. The prior for the destination-age interaction effect, $\beta_{ja}^{\text{dest:age}}$, is similar.
 
 The prior for the age-sex interaction effect, $\beta_{as}^{\text{age:sex}}$, is a sex-specific first-order random walk over age,
 \begin{equation}
 \begin{aligned}
-\beta_{1s}^{\text{age:sex}}&=0,\\
-\beta_{as}^{\text{age:sex}}&\sim N(\beta_{a-1,s}^{\text{age:sex}},\tau_{\text{age:sex}}^2),\ a=2,\cdots,A.
+\beta_{1s}^{\text{age:sex}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1),\\
+\beta_{as}^{\text{age:sex}}&\sim N(\beta_{a-1,s}^{\text{age:sex}},\sigma_{\text{age:sex}}^2),\ a=2,\cdots,A.
 \end{aligned}
 \end{equation}
-The standard deviation parameter $\tau_{\text{age:sex}}$ is shared across both sexes, and is given a half-normal prior $\tau_{\text{age:sex}}\sim N^+(0,1)$.
+The standard deviation parameter $\sigma_{\text{age:sex}}$ is shared across both sexes, and is given a half-normal prior $\sigma_{\text{age:sex}}\sim N^+(0,1)$.
 
 The prior for the age-time interaction effect, $\beta_{at}^{\text{age:time}}$, is an age-specific first order random walk over time, \begin{equation}
 \begin{aligned}
-\beta_{a1}^{\text{age:time}}&=0,\\
-\beta_{at}^{\text{age:time}}&\sim N(\beta_{a,t-1}^{\text{age:time}},\tau_{\text{age:time}}^2),\ t=2,\cdots,T.
+\beta_{a1}^{\text{age:time}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1),\\
+\beta_{at}^{\text{age:time}}&\sim N(\beta_{a,t-1}^{\text{age:time}},\sigma_{\text{age:time}}^2),\ t=2,\cdots,T.
 \end{aligned}
 \end{equation}
-The standard deviation parameter $\tau_{\text{age:time}}$ is shared across all ages, and is given a half-normal prior $\tau_{\text{age:time}}\sim N^+(0,1)$.
+The standard deviation parameter $\sigma_{\text{age:time}}$ is shared across all ages, and is given a half-normal prior $\sigma_{\text{age:time}}\sim N^+(0,1)$.
 
 The prior for the origin-destination interaction effect, $\beta_{ij}^{\text{orig:dest}}$, is a normal distribution,
 \begin{equation}
-\beta_{ij}^{\text{orig:dest}}\sim N(0,\tau_{\text{orig:dest}}^2).
+\beta_{ij}^{\text{orig:dest}}\sim N(0,\sigma_{\text{orig:dest}}^2).
 \end{equation}
-The standard deviation parameter $\tau_{\text{orig:dest}}$ is shared across all origin-destination pairs, and is given a half-normal prior $\tau_{\text{orig:dest}}\sim N^+(0,1)$.
+The standard deviation parameter $\sigma_{\text{orig:dest}}$ is shared across all origin-destination pairs, and is given a half-normal prior $\sigma_{\text{orig:dest}}\sim N^+(0,1)$.
 
 The prior for the origin-time interaction effect, $\beta_{it}^{\text{orig:time}}$, is a region-specific first order random walk over time,
 \begin{equation}
 \begin{aligned}
-\beta_{i1}^{\text{orig:time}}&=0,\\
-\beta_{it}^{\text{orig:time}}&\sim N(\beta_{i,t-1}^{\text{orig:time}},\tau_{\text{orig:time}}^2),\ t=2,\cdots,T.
+\beta_{i1}^{\text{orig:time}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1)},\\
+\beta_{it}^{\text{orig:time}}&\sim N(\beta_{i,t-1}^{\text{orig:time}},\sigma_{\text{orig:time}}^2),\ t=2,\cdots,T.
 \end{aligned}
 \end{equation}
-The standard deviation parameter $\tau_{\text{orig:time}}$ is shared across all regions, and is given a half-normal prior $\tau_{\text{orig:time}}\sim N^+(0,1)$. The prior for the destination-time interaction effect, $\beta_{jt}^{\text{dest:time}}$, is similar.
+The standard deviation parameter $\sigma_{\text{orig:time}}$ is shared across all regions, and is given a half-normal prior $\sigma_{\text{orig:time}}\sim N^+(0,1)$. The prior for the destination-time interaction effect, $\beta_{jt}^{\text{dest:time}}$, is similar.
 
-Table \ref{tab:prior-summary} summarizes the priors for terms in the baseline model.
+Table \ref{tab:prior-summary} summarizes the priors for terms in the {\color{yellow}baseline}{\color{magenta}initial} model.
 \begin{table}[ht]
 \centering
 \caption{Summary of priors for terms in the baseline model}
@@ -246,46 +258,65 @@ Destination-age & Region-specific first order random walks over age\\
 \end{tabular}
 \end{table}
 
-\subsection{Two Expanded Models}
+\subsection{Two Expanded Models {\color{magenta}(Models 2 and 3)}}
 As shown in Figures~\ref{fig:direct_2016} and ~\ref{fig:direct_2021}, the age profile of migration rate can be drastically different across origin-destination pairs. Including only origin-age and destination-age interactions may not be sufficient. Therefore we also consider an expanded model with a three-way origin-destination-age interaction effect, $\beta_{ija}^{\text{orig:dest:age}}$. 
 
 The prior for the origin-destination-age interaction effect, $\beta_{ija}^{\text{orig:dest:age}}$, is an origin-destination pair-specific first-order random walk over age,
 \begin{equation}
 \begin{aligned}
-\beta_{ij1}^{\text{orig:dest:age}}&=0,\\
-\beta_{ija}^{\text{orig:dest:age}}&\sim N(\beta_{i,j,a-1}^{\text{orig:dest:age}},\tau_{\text{orig:dest:age}}^2),\ a=2,\cdots,A.
+\beta_{ij1}^{\text{orig:dest:age}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1)},\\
+\beta_{ija}^{\text{orig:dest:age}}&\sim N(\beta_{i,j,a-1}^{\text{orig:dest:age}},\sigma_{\text{orig:dest:age}}^2),\ a=2,\cdots,A.
 \end{aligned}
 \end{equation}
-The standard deviation parameter $\tau_{\text{orig:dest:age}}$ is shared across all origin-destination pairs, and is given a half-normal prior $\tau_{\text{orig:dest:age}}\sim N^+(0,1)$. 
+The standard deviation parameter $\sigma_{\text{orig:dest:age}}$ is shared across all origin-destination pairs, and is given a half-normal prior $\sigma_{\text{orig:dest:age}}\sim N^+(0,1)$. 
 
 To further capture the higher-order interaction between age, origin, destination, sex and time, we specify another expanded model with two additional four-way interaction effects: origin-destination-age-sex and origin-destination-age-time interactions. 
 
 The prior for the origin-destination-age-sex interaction effect, $\beta_{ijas}^{\text{orig:dest:age:sex}}$, is an origin-destination-sex-specific first-order random walk over age,
 \begin{equation}
 \begin{aligned}
-\beta_{ij1s}^{\text{orig:dest:age:sex}}&=0,\\
-\beta_{ijas}^{\text{orig:dest:age:sex}}&\sim N(\beta_{i,j,a-1,s}^{\text{orig:dest:age:sex}},\tau_{\text{orig:dest:age:sex}}^2),\ a=2,\cdots,A.
+\beta_{ij1s}^{\text{orig:dest:age:sex}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1)},\\
+\beta_{ijas}^{\text{orig:dest:age:sex}}&\sim N(\beta_{i,j,a-1,s}^{\text{orig:dest:age:sex}},\sigma_{\text{orig:dest:age:sex}}^2),\ a=2,\cdots,A.
 \end{aligned}
 \end{equation}
-The standard deviation parameter $\tau_{\text{orig:dest:age:sex}}$ is shared across all origin-destination-sex triples, and is given a half-normal prior $\tau_{\text{orig:dest:age:sex}}\sim N^+(0,1)$. 
+The standard deviation parameter $\sigma_{\text{orig:dest:age:sex}}$ is shared across all origin-destination-sex triples, and is given a half-normal prior $\sigma_{\text{orig:dest:age:sex}}\sim N^+(0,1)$. 
 
 The prior for the origin-destination-age-time interaction effect, $\beta_{ijas}^{\text{orig:dest:age:time}}$, is an origin-destination-age-specific first-order random walk over time,
 \begin{equation}
 \begin{aligned}
-\beta_{ija1}^{\text{orig:dest:age:time}}&=0,\\
-\beta_{ijat}^{\text{orig:dest:age:time}}&\sim N(\beta_{i,j,a,t-1}^{\text{orig:dest:age:time}},\tau_{\text{orig:dest:age:time}}^2),\ a=2,\cdots,A.
+\beta_{ija1}^{\text{orig:dest:age:time}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1)},\\
+\beta_{ijat}^{\text{orig:dest:age:time}}&\sim N(\beta_{i,j,a,t-1}^{\text{orig:dest:age:time}},\sigma_{\text{orig:dest:age:time}}^2),\ a=2,\cdots,A.
 \end{aligned}
 \end{equation}
-The standard deviation parameter $\tau_{\text{orig:dest:age:time}}$ is shared across all origin-destination-age triples, and is given a half-normal prior $\tau_{\text{orig:dest:age:time}}\sim N^+(0,1)$. 
+The standard deviation parameter $\sigma_{\text{orig:dest:age:time}}$ is shared across all origin-destination-age triples, and is given a half-normal prior $\sigma_{\text{orig:dest:age:time}}\sim N^+(0,1)$. 
+
+\subsection{{\color{magenta}Main Effects Model}}
+{\color{magenta}As a simple baseline for comparison, we also specify a model with only main effects and no interactions:
+\begin{equation*}
+\begin{aligned}
+ \log \mu_{ijast} &= \beta^0 + \beta_i^{\text{orig}}+\beta_j^{\text{dest}}+\beta_{a}^{\text{age}}+\beta_{s}^{\text{sex}}+\beta_t^{time}.
+\end{aligned}
+\end{equation*}
+The priors for the main effects are the same as those in the previous three models.}
+
+\subsection{{\color{magenta}Model Identification and Regularization}}
+
+{\color{magenta}All four models contain a large number of parameters. Each involves 170,352 cell-specific migration rates ($\gamma_{ijast}$) and the dispersion parameter $\xi$. The main effects model has 125 $\beta$ parameters and 7 hyper-parameters; the initial model has 3,443 $\beta$ parameters and 27 hyper-parameters; the first expanded model has 10,814 $\beta$ parameters and 28 hyper-parameters; and the second expanded model has 121,379 $\beta$ parameters and 30 hyper-parameters.}
+
+{\color{magenta}The expected rates $\mu_{ijast}$ are determined by the $\beta$ parameters. Because the Gamma prior for 
+$\gamma_{ijast}$ conditional on $\mu_{ijast}$ is conjugate to the Poisson likelihood for $y_{ijast}$ conditional on $\gamma_{ijast}$, we can marginalize over $\gamma_{ijast}$ during model fitting. This means that we can generate posterior draws of the $\beta$ parameters and hyper-parameters and then, conditional on these draws, generate posterior draws of $\gamma_{ijast}$. This is analogous to the marginalization strategy used in collapsed Gibbs sampling \citep{liu1994collapsed}. Details are provided in the Appendix.}
+
+{\color{magenta}Even after marginalizing over $\gamma_{ijast}$, the initial model and the two expanded models still contain a large number of $\beta$ parameters. Proper priors ensure a proper posterior, but identification of the $\beta$ parameters may still be weak. Fortunately, our focus is on the migration rates rather than on the $\beta$ parameters per se.} {\color{cyan}Hi Junni - do you mind if I merge some changes into the document now?}
 
 \subsection{Computation}
 
 We fit the model using our own R package \texttt{bage}. The package implements a general family of Bayesian hierarchical models. Users can specify the likelihood (Poisson, Binomial, or Normal), the main and interaction terms to include, and the priors for each of these terms.
 
-The \texttt{bage} package draws on the R package \textsc{TMB} \citep{kristensen2016tmb} to estimate the $\beta$ parameters (e.g., $\beta^0$, $\beta_i^{\text{orig}}$) and their hyper-parameters (e.g., $\tau_{\text{orig}}$, $\kappa_t^{\text{time}}$), as well as the dispersion parameter 
-$\xi$. \textsc{TMB} combines a Laplace approximation and numerical integration \citep{kristensen2016tmb,osgood2022statistical}. Borrowing the idea of collapsed Gibbs sampling from \cite{liu1994collapsed}, we marginalize out the rates $\gamma_{ijast}$ during model fitting. This dramatically reduces the dimension of the problem, which further increases computational speed and allows us to avoid using Laplace approximations for these quantities. We derive values for $\gamma_{ijast}$ in a post-processing step. Details are provided in the Appendix. 
+The \texttt{bage} package draws on the R package \textsc{TMB} \citep{kristensen2016tmb} to estimate the $\beta$ parameters (e.g., $\beta^0$, $\beta_i^{\text{orig}}$) and their hyper-parameters (e.g., $\sigma_{\text{orig}}$, $\kappa_t^{\text{time}}$), as well as the dispersion parameter 
+$\xi$. \textsc{TMB} combines a Laplace approximation and numerical integration \citep{kristensen2016tmb,osgood2022statistical}. Borrowing the idea of collapsed Gibbs sampling from \cite{liu1994collapsed}, we marginalize out the rates $\gamma_{ijast}$ during model fitting. This dramatically reduces the dimension of the problem, which further increases computational speed and allows us to avoid using Laplace approximations for these quantities. We derive values for $\gamma_{ijast}$ in a post-processing step. {\color{yellow}Details are provided in the Appendix.} 
 
-Fitting the baseline model on an Intel Core i9 laptop, and obtaining 1,000 posterior draws take 9 minutes. Fitting the first expanded model takes 24 minutes, and fitting the second expanded model takes 60 minutes. These times are relatively fast, given the number of parameters being estimated. All three models have 170,352 rate parameters ($\gamma_{ijast}$) and the dispersion parameter $\xi$. The baseline model has 3,443 $\beta$ parameters  and 27 hyper-parameters, the first expanded model has 10,814 $\beta$ parameters and 28 hyper-parameters, and the second expanded model has 121,379 $\beta$ parameters and 30 hyper-parameters. 
+{\color{cyan}John. Referee 1's comments: The reported runtimes are useful, but computational reporting could also be made more informative by specifying the exact processor, number of cores/threads, whether parallelization is used, peak memory consumption, and whether the reported times include generation of the posterior draws. Because computational scalability is emphasized as an advantage of the approach, even a limited empirical assessment of scaling with the number of cells and/or model
+terms would be valuable.} These times are relatively fast, given the number of parameters being estimated. {\color{yellow}All three models have 170,352 rate parameters ($\gamma_{ijast}$) and the dispersion parameter $\xi$. The baseline model has 3,443 $\beta$ parameters  and 27 hyper-parameters, the first expanded model has 10,814 $\beta$ parameters and 28 hyper-parameters, and the second expanded model has 121,379 $\beta$ parameters and 30 hyper-parameters.} 
 
 \section{Model Selection and Model Checking}
 
@@ -414,12 +445,6 @@ The properties of the Poisson, Gamma, and Negative Binomial distributions imply 
 \end{equation}
 
 
- \begin{figure}[ht]
-\includegraphics[width = 0.5\textwidth]{figures/fig_map_england}
-  \centering
-  \caption{The regions of England. Source: \citet{ons2024regions}.}
-    \label{fig:map_england}  
-\end{figure}
 
 
 \end{document}
