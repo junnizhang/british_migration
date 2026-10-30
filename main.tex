@@ -162,7 +162,7 @@ The prior for the origin effect, $\beta_i^{\text{orig}}$, is a normal distributi
 \begin{equation}
 \beta_i^{\text{orig}}\sim N(0,\sigma_{\text{orig}}^2).
 \end{equation}
-The standard deviation parameter $\sigma_{\text{orig}}$ is shared across all regions.  {\color{magenta}It needs a prior itself. Here and elsewhere in the model we use weakly informative priors that set orders of magnitude rather than narrowly constraining results \citep[p. 55]{Gelman2014bayesian}. We assign $\sigma_{\text{orig}$}
+The standard deviation parameter $\sigma_{\text{orig}}$ is shared across all regions.  {\color{magenta}It needs a prior itself. Here and elsewhere in the model we use weakly informative priors that set orders of magnitude rather than narrowly constraining results \citep[p. 55]{Gelman2014bayesian}. We assign $\sigma_{\text{orig}}$}
 {\color{yellow}, and is given} a half-normal prior
 $\sigma_{\text{orig}}\sim N^+(0,1).$ 
 The prior for the destination effect, $\beta_j^{\text{dest}}$, is similar.
@@ -170,7 +170,7 @@ The prior for the destination effect, $\beta_j^{\text{dest}}$, is similar.
 The prior for the age effects, $\beta_a^{\text{age}}$, is a second order random walk (RW2),
 \begin{equation}
 \begin{aligned}
-\beta_1^{\text{age}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1),\\
+\beta_1^{\text{age}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1)},\\
 \beta_2^{\text{age}}&\sim N(0,1),\\
 \beta_a^{\text{age}}&\sim N(2\beta_{a-1}^{\text{age}}-\beta_{a-2}^{\text{age}},\sigma_{\text{age}}^2),\ a=3,\cdots,A,
 \end{aligned}
@@ -211,7 +211,7 @@ The standard deviation parameter $\sigma_{\text{orig:age}}$ is shared across all
 The prior for the age-sex interaction effect, $\beta_{as}^{\text{age:sex}}$, is a sex-specific first-order random walk over age,
 \begin{equation}
 \begin{aligned}
-\beta_{1s}^{\text{age:sex}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1),\\
+\beta_{1s}^{\text{age:sex}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1)},\\
 \beta_{as}^{\text{age:sex}}&\sim N(\beta_{a-1,s}^{\text{age:sex}},\sigma_{\text{age:sex}}^2),\ a=2,\cdots,A.
 \end{aligned}
 \end{equation}
@@ -219,7 +219,7 @@ The standard deviation parameter $\sigma_{\text{age:sex}}$ is shared across both
 
 The prior for the age-time interaction effect, $\beta_{at}^{\text{age:time}}$, is an age-specific first order random walk over time, \begin{equation}
 \begin{aligned}
-\beta_{a1}^{\text{age:time}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1),\\
+\beta_{a1}^{\text{age:time}}&{\color{yellow}=0}{\color{magenta}\sim N(0,1)},\\
 \beta_{at}^{\text{age:time}}&\sim N(\beta_{a,t-1}^{\text{age:time}},\sigma_{\text{age:time}}^2),\ t=2,\cdots,T.
 \end{aligned}
 \end{equation}
@@ -335,7 +335,9 @@ $\xi$. \texttt{TMB} combines a Laplace approximation and numerical integration \
 {\color{magenta}The Laplace approximation underlying \texttt{TMB} belongs to a broader class of approximate Bayesian inference methods that have been shown to be reliable and computationally efficient. \citet{rue2017bayesian} use integrated nested Laplace approximations (INLA) to perform approximate Bayesian inference for latent Gaussian models (LGMs), a class that includes a large proportion of the statistical models used today. They show that INLA (and the associated \texttt{R-INLA} package) performs inference within a reasonable time frame and in most cases is both faster and more accurate than MCMC alternatives. \citet{osgood2023statistical} provide a large-scale simulation study that assesses and compares \texttt{R-INLA} and \texttt{TMB} for continuous spatial models, and find that the predictive fields from both methods are comparable in most situations. We have used our package \texttt{bage} (which builds on \texttt{TMB}) for many demographic estimation and forecasting problems and find the results satisfactory, as assessed by posterior predictive checks and held-out data validation.}
 
 {\color{cyan}John. Referee 1's comments: The reported runtimes are useful, but computational reporting could also be made more informative by specifying the exact processor, number of cores/threads, whether parallelization is used, peak memory consumption, and whether the reported times include generation of the posterior draws. Because computational scalability is emphasized as an advantage of the approach, even a limited empirical assessment of scaling with the number of cells and/or model
-terms would be valuable.} These times are relatively fast, given the number of parameters being estimated. {\color{yellow}All three models have 170,352 rate parameters ($\gamma_{ijast}$) and the dispersion parameter $\xi$. The baseline model has 3,443 $\beta$ parameters  and 27 hyper-parameters, the first expanded model has 10,814 $\beta$ parameters and 28 hyper-parameters, and the second expanded model has 121,379 $\beta$ parameters and 30 hyper-parameters.} 
+  terms would be valuable.} These times are relatively fast, given the number of parameters being estimated. {\color{yellow}All three models have 170,352 rate parameters ($\gamma_{ijast}$) and the dispersion parameter $\xi$. The baseline model has 3,443 $\beta$ parameters  and 27 hyper-parameters, the first expanded model has 10,814 $\beta$ parameters and 28 hyper-parameters, and the second expanded model has 121,379 $\beta$ parameters and 30 hyper-parameters.}
+
+\input{tables/tab_resources_all.tex}
 
 \section{Model Selection and Model Checking}
 
