@@ -56,10 +56,14 @@ Internal migration rates measure migration intensities, that is, how frequently 
 
 It is not easy to identify which features of historical trends in internal migration rates can safely be extrapolated into the future, since the heterogeneity across sub-national areas can be substantial. For instance, the age profiles of migrants coming to university towns are drastically different from those of migrants coming to rural areas \citep{wilson2010model}. When internal migration is finely disaggregated, e.g., by age, sex, region of origin and region of destination, heterogeneity is even more prominent. Furthermore, in some cases the numbers of observations for some combinations of the classifying variables can be small, and individual-level randomness starts to obscure underlying patterns. Traditional `direct' estimates of rates, obtained by dividing observed migration counts by populations at risk, are no longer reliable \citep{zhang2020bayesian}.
 
-One way to extract complex signals from sparse, noisy datasets is to use Bayesian hierarchical models \citep{Gelman2014bayesian}. These models allow analysts to encode expectations about the qualitative behaviour of model components, through the use of prior distributions, and also to borrow strength across subgroups within the population, to cope with sparsity. Bayesian hierarchical models have been increasingly popular among researchers carrying out sub-national demographic estimation and forecasting \citep{lynch2010obtaining,schmertmann2013bayes,bijak2016bayesian,alexander2017flexible,bryant2018bayesian,wang2022spatiotemporal,dharamshi2025jointly}. There is a limited literature on Bayesian methods for modelling and forecasting internal migration \citep{wisniowski2014baysian,zhang2020bayesian,furfaro2021bayesian,goes2026probabilistic}.
+One way to extract complex signals from {\color{yellow}sparse,} noisy datasets is to use Bayesian hierarchical models \citep{Gelman2014bayesian}. These models allow analysts to encode expectations about the qualitative behaviour of model components, through the use of prior distributions, and also to borrow strength across subgroups within the population, to cope with sparsity. Bayesian hierarchical models have been increasingly popular among researchers carrying out sub-national demographic estimation and forecasting \citep{lynch2010obtaining,schmertmann2013bayes,bijak2016bayesian,alexander2017flexible,bryant2018bayesian,wang2022spatiotemporal,alexander2022bayesian,dharamshi2025jointly,omenti2026bayesian}. 
+
+There is a limited literature on Bayesian methods for modelling and forecasting internal migration \citep{wisniowski2014baysian,zhang2020bayesian,furfaro2021bayesian,goes2026probabilistic}. {\color{magenta}\cite{siriban2026review}, 
+\cite{goes2026probabilistic} ***}
+
 
 {\color{magenta}After more than a decade of effort, we have developed a flexible Bayesian hierarchical modeling framework for estimating and forecasting disaggregated demographic rates. We have also developed flexible and computationally efficient software for fitting, checking, and using these models. In this paper, we apply the framework to estimate internal migration rates in England from 2012 to 2024, disaggregated by single year of age, sex, and origin and destination region. Within this framework, we specify several models of increasing complexity. }
-{\color{yellow}In this paper, we develop several Bayesian models that can capture complex patterns in internal migration, and apply them to estimate internal migration rates for the period 2012–2024 for the UK, disaggregated by single year of age, sex, region of origin and region of destination.} We perform model selection and model checking, and then use the selected model to forecast internal migration rates over the period 2025–2030. {\color{magenta}Almost all computations were carried out using our software.}{\color{yellow}An important part of our efficient computation builds on the ideas in \cite{liu2001monte}, and in particular on the collapsed Gibbs sampling in \cite{liu1994collapsed}.}
+{\color{yellow}In this paper, we develop several Bayesian models that can capture complex patterns in internal migration, and apply them to estimate internal migration rates for the period 2012–2024 for the UK, disaggregated by single year of age, sex, region of origin and region of destination.} We perform model selection and model checking, and then use the selected model to forecast internal migration rates over the period 2025–2030. {\color{magenta}Almost all computations are carried out using our software.}{\color{yellow}An important part of our efficient computation builds on the ideas in \cite{liu2001monte}, and in particular on the collapsed Gibbs sampling in \cite{liu1994collapsed}.}
 
 The remaining parts of the paper are organized as follows. Section 2 presents the UK internal migration data and patterns in the data. Section 3 discusses several Bayesian models and covers the computation. Section 4 then turns to model selection and model checking. Section 5 presents results on estimation and forecasting. Section 6 then concludes. All data and computer code for the analysis are available at [url for GitHub repository].
 
@@ -90,7 +94,11 @@ Figure~\ref{fig:direct_2016} displays direct estimates of migration rates by reg
 
 Figure~\ref{fig:direct_2021} displays information similar to that in Figure~\ref{fig:direct_2016}, but for year 2021. The age profiles again show dramatic differences across origin-destination pairs. For the same origin-destination pairs, the age profiles also change across time. For instance, for migration from London to the South East in 2016, the peak rate at age 19 is much larger than the rates at ages 25–35, but this gap becomes smaller in 2021.
 
-Figure~\ref{fig:summary_direct} displays direct estimates of migration rates by region of origin, region of destination, sex, and calendar year for selected regions, for which migration counts and population at risk have been aggregated over age. The effect of the COVID-19 pandemic is visible in most of the series, with a dip in migration during 2020 and a surge in migration during the years that followed. However, there is heterogeneity in time trends across origin-destination pairs. For example, migration rates from London to the East of England show the following trend: slow increase, then flat, then a sharp increase followed by a sharp decrease, then flat again. Migration from London to the South East follows a similar pattern, but with greater fluctuations. Migration rates from London to Yorkshire and the Humber, however, remain almost flat throughout the entire period. There is only a small difference in time trends between sexes for some origin-destination pairs.
+Figure~\ref{fig:summary_direct} displays direct estimates of migration rates by region of origin, region of destination, sex, and calendar year for selected regions, for which migration counts and population at risk have been aggregated over age. The effect of the COVID-19 pandemic is visible in most of the series, with a dip in migration during 2020 and a surge in migration during the years that followed. However, there is heterogeneity in time trends across origin-destination pairs. For example, migration rates from London to the East of England show the following trend: slow increase, then flat, then a sharp increase followed by a sharp decrease, then flat again. Migration from London to the South East follows a similar pattern, but with greater fluctuations. Migration rates from London to Yorkshire and the Humber, however, remain almost flat throughout the entire period. 
+
+{\color{magenta}As shown in Figure~\ref{fig:map_england}, the East of England and the South East are the two regions neighboring London. As \citet{Lange2024} points out, the shift to working from home has weakened ties to the office, and gardens and access to the outdoors have become higher priorities. Such shifts in preferences may help explain the migration patterns described above.}
+
+There is only a small difference in time trends between sexes for some origin-destination pairs.
 
  \begin{figure}[htp]
 \includegraphics[width = \textwidth]{figures/fig_direct_time}
@@ -100,9 +108,9 @@ Figure~\ref{fig:summary_direct} displays direct estimates of migration rates by 
 %\newline\small\scriptsize{\textsf{\textit{Note}:  The results shown here are a more complete version of results shown in Figure 6 in the main text.}}
 \end{figure}
 
-\section{Bayesian Models and Computation}
+\section{Bayesian Models and Computation}\label{sec:models}
 
-\subsection{{\color{yellow}Baseline Model}{\color{magenta}Initial Model (Model 0)}}
+\subsection{{\color{yellow}Baseline Model}{\color{magenta}Initial Model}}
 
 \subsubsection{Counts and Rates}
 Let $y_{ijast}$ denote migration counts from region $i$ ($i=1,\cdots,9$) to region $j$ ($j=1,\cdots,9$ and $j\neq i$) for age group $a$ ($a=1$ for age 0, $\cdots$, $a=91$ for age $90+$) and sex $s$ ($s=1$ for females and $s=0$ for males) during year $t$
@@ -130,7 +138,7 @@ where
 \end{equation}
 The posterior mean is a weighted average of a cell-specific direct estimate of migration rate $y_{ijast}/w_{ijast}$ and a prior mean $\mu_{ijast}$. The prior mean receives more weight as the amount of information for the cell, represented by expected count $\mu_{ijast} w_{ijast}$, falls. The estimate for any given cell borrows strength, via the prior model, from all cells in the model. This leads to more stable estimates than direct estimates. 
 
-\subsubsection{Priors}
+\subsubsection{Priors}\label{subsec:priors}
 The prior model relates the expected rate to terms reflecting variation across region of origin, region of destination, age, sex, and time,
 \begin{equation}
 \begin{aligned}
@@ -182,14 +190,14 @@ The prior for the time effect $\beta_t^{\text{time}}$ consists of a linear trend
 \kappa_t^{\text{time}}&\sim N(\phi_1\kappa_{t-1}^{\text{time}}+\phi_2\kappa_{t-2}^{\text{time}},\sigma_{\text{time}}^2),
 \end{aligned}
 \end{equation}
-where $T=13$ is the number of years in the observed data. The trend terms sum to zero, $\sum_{t=1}^T\alpha_t^{\text{time}}=0$. The use of an AR2 prior for errors around the trend can capture reversion to the mean, but is also flexible enough to represent other patterns of errors.
+where $T=13$ is the number of years in the observed data. The trend terms sum to zero, $\sum_{t=1}^T\alpha_t^{\text{time}}=0$. The use of an AR2 prior for errors around the trend can capture reversion to the mean, but is also flexible enough to represent other patterns of errors. 
 
 The parameters in the prior for the time effect themselves need priors. {\color{yellow}Here and elsewhere in the model we use weakly informative priors that set orders of magnitude rather than narrowly constraining results \citep[p. 55]{Gelman2014bayesian}.} The value of the standard deviation $\sigma_{\text{time}}$ in the AR2 prior is chosen so that each $\kappa_t^{\text{time}}$ has marginal distribution $\text{N}(0, \varphi_{\text{time}}^2)$, where 
 $\varphi_{\text{time}} \sim \text{N}^+(0,1)$. Values for $\kappa_1^{\mathcal{T}}$ and $\kappa_2^{\mathcal{T}}$ are generated through the Yule-Walker equations, which is the standard way of generating initial conditions in an auto-regressive process (\citealp[pp.~45--46]{prado2021time}; \citealp{tmb2025ar}). We use the prior
 \begin{equation}
   \frac{\phi_k + 1}{2} \sim \text{Beta}(5, 5), \quad k = 1, 2
 \end{equation}
-for the autoregressive coefficients. This prior restricts the coefficients to values between -1 and 1, and discourages values that are very close to the boundaries, which helps prevent numerical problems. 
+for the autoregressive coefficients. This prior restricts the coefficients to values between -1 and 1, and discourages values that are very close to the boundaries, which helps prevent numerical problems. {\color{magenta}The construction of the marginal variance and the initialization via the Yule–Walker equations require the AR2 prior to be stationary. Since $-1<\phi_2<1$ is already ensured, the remaining stationarity conditions are $\phi_1+\phi_2<1$ and $\phi_2-\phi_1<1$. Although we do not impose these remaining restrictions a priori, we check the posterior draws of $\phi_1$ and $\phi_2$ and find that they satisfied these conditions.}
 
 The prior for the origin-age interaction effect, $\beta_{ia}^{\text{orig:age}}$, is a region-specific first order random walk over age,
 \begin{equation}
@@ -258,7 +266,7 @@ Destination-age & Region-specific first order random walks over age\\
 \end{tabular}
 \end{table}
 
-\subsection{Two Expanded Models {\color{magenta}(Models 2 and 3)}}
+\subsection{Two Expanded Models}
 As shown in Figures~\ref{fig:direct_2016} and ~\ref{fig:direct_2021}, the age profile of migration rate can be drastically different across origin-destination pairs. Including only origin-age and destination-age interactions may not be sufficient. Therefore we also consider an expanded model with a three-way origin-destination-age interaction effect, $\beta_{ija}^{\text{orig:dest:age}}$. 
 
 The prior for the origin-destination-age interaction effect, $\beta_{ija}^{\text{orig:dest:age}}$, is an origin-destination pair-specific first-order random walk over age,
@@ -301,19 +309,30 @@ The priors for the main effects are the same as those in the previous three mode
 
 \subsection{{\color{magenta}Model Identification and Regularization}}
 
-{\color{magenta}All four models contain a large number of parameters. Each involves 170,352 cell-specific migration rates ($\gamma_{ijast}$) and the dispersion parameter $\xi$. The main effects model has 125 $\beta$ parameters and 7 hyper-parameters; the initial model has 3,443 $\beta$ parameters and 27 hyper-parameters; the first expanded model has 10,814 $\beta$ parameters and 28 hyper-parameters; and the second expanded model has 121,379 $\beta$ parameters and 30 hyper-parameters.}
+{\color{magenta}All four models contain a large number of parameters. Each involves 170,352 cell-specific migration rates ($\gamma_{ijast}$) and the dispersion parameter $\xi$. The main effects model has 125 $\beta$ parameters (e.g., $\beta^0$, $\beta_i^{\text{orig}}$) and 7 hyper-parameters (e.g., $\sigma_{\text{orig}}$); the initial model has 3,443 $\beta$ parameters and 27 hyper-parameters (e.g., $\sigma_{\text{orig}}$, $\kappa_t^{\text{time}}$); the first expanded model has 10,814 $\beta$ parameters and 28 hyper-parameters; and the second expanded model has 121,379 $\beta$ parameters and 30 hyper-parameters.}
 
-{\color{magenta}The expected rates $\mu_{ijast}$ are determined by the $\beta$ parameters. Because the Gamma prior for 
-$\gamma_{ijast}$ conditional on $\mu_{ijast}$ is conjugate to the Poisson likelihood for $y_{ijast}$ conditional on $\gamma_{ijast}$, we can marginalize over $\gamma_{ijast}$ during model fitting. This means that we can generate posterior draws of the $\beta$ parameters and hyper-parameters and then, conditional on these draws, generate posterior draws of $\gamma_{ijast}$. This is analogous to the marginalization strategy used in collapsed Gibbs sampling \citep{liu1994collapsed}. Details are provided in the Appendix.}
+{\color{magenta}The expected rates $\mu_{ijast}$ are determined by the $\beta$ parameters. Note that the Gamma prior for 
+$\gamma_{ijast}$ conditional on $\mu_{ijast}$ in \eqref{eq:priormod1} is conjugate to the Poisson likelihood for $y_{ijast}$ conditional on $\gamma_{ijast}$ in \eqref{eq:poisson}. Consequently, integrating out $\gamma_{ijast}$ yields the negative binomial distribution
+\begin{equation}\label{eq:negbinom}
+  y_{ijast} \sim \text{NegBinom}\left(\xi^{-1}, (1 + \mu_{ijast} P_{iast} \xi)^{-1}\right),
+\end{equation}
+as in \citep{norton2018sampling}. Thus, we can generate posterior draws of the $\beta$ parameters and hyper-parameters and then, conditional on these draws, generate posterior draws of $\gamma_{ijast}$ in a post-processing step, using
+\begin{equation}\label{eq:generate_gamma}
+  \gamma_{ijast} \mid y_{ijast}, P_{iast}, \mu_{ijast}, \xi \sim \text{Gamma}\left(y_{ijast} + \xi^{-1}, P_{iast} + (\xi \mu_{ijast})^{-1}\right).
+\end{equation}
+This is analogous to the marginalization strategy used in collapsed Gibbs sampling \citep{liu1994collapsed}.}
 
-{\color{magenta}Even after marginalizing over $\gamma_{ijast}$, the initial model and the two expanded models still contain a large number of $\beta$ parameters. Proper priors ensure a proper posterior, but identification of the $\beta$ parameters may still be weak. Fortunately, our focus is on the migration rates rather than on the $\beta$ parameters per se.} 
+{\color{magenta}Even after marginalizing over $\gamma_{ijast}$, the initial model and the two expanded models still contain a large number of $\beta$ parameters. We do not perform sparse shrinkage or selection of interactions in the usual sense (e.g., spike-and-slab variable selection in \cite{george1993variable} or horseshoe shrinkage in \cite{carvalho2010horseshoe}). Instead, the roughness and magnitude of the specified interactions are controlled through hierarchical priors. Proper priors ensure a proper posterior. However, since the observed migration counts $y_{ijast}$ depend on the expected rates $\mu_{ijast}$  that are linear combinations of the $\beta$ parameters,  identification of the individual $\beta$ parameters may be weak.  Fortunately, we are interested in the rates $\gamma_{ijast}$ which depend on $\mu_{ijast}$, rather than in the individual $\beta$ parameters per se. 
+} 
 
 \subsection{Computation}
 
-We fit the model using our own R package \texttt{bage}. The package implements a general family of Bayesian hierarchical models. Users can specify the likelihood (Poisson, Binomial, or Normal), the main and interaction terms to include, and the priors for each of these terms.
+We fit the model using our own R package \texttt{bage}. The package implements {\color{yellow}a general family of Bayesian hierarchical models}{\color{magenta}the flexible Bayesian hierarchical modeling framework that we have developed}. Users can specify the likelihood (Poisson, Binomial, or Normal), the main and interaction terms to include, and the priors for each of these terms.
 
-The \texttt{bage} package draws on the R package \textsc{TMB} \citep{kristensen2016tmb} to estimate the $\beta$ parameters (e.g., $\beta^0$, $\beta_i^{\text{orig}}$) and their hyper-parameters (e.g., $\sigma_{\text{orig}}$, $\kappa_t^{\text{time}}$), as well as the dispersion parameter 
-$\xi$. \textsc{TMB} combines a Laplace approximation and numerical integration \citep{kristensen2016tmb,osgood2022statistical}. Borrowing the idea of collapsed Gibbs sampling from \cite{liu1994collapsed}, we marginalize out the rates $\gamma_{ijast}$ during model fitting. This dramatically reduces the dimension of the problem, which further increases computational speed and allows us to avoid using Laplace approximations for these quantities. We derive values for $\gamma_{ijast}$ in a post-processing step. {\color{yellow}Details are provided in the Appendix.} 
+The \texttt{bage} package draws on the R package \texttt{TMB} \citep{kristensen2016tmb} to estimate the $\beta$ parameters {\color{yellow}(e.g., $\beta^0$, $\beta_i^{\text{orig}}$)} and their hyper-parameters {\color{yellow}(e.g., $\sigma_{\text{orig}}$, $\kappa_t^{\text{time}}$)}, as well as the dispersion parameter 
+$\xi$. \texttt{TMB} combines a Laplace approximation and numerical integration \citep{kristensen2016tmb,osgood2022statistical}. {\color{magenta}In the Laplace approximation, we maximize the log marginal posterior density with respect to the $\beta$ parameters, the hyperparameters, and $\xi$, with the standard deviation parameters on the log scale. We then generate draws of the $\beta$ parameters, the hyperparameters and $\xi$ from a multivariate normal distribution, again with the standard deviation parameters on the log scale.}{\color{yellow}Borrowing the idea of collapsed Gibbs sampling from \cite{liu1994collapsed}, we marginalize out the rates $\gamma_{ijast}$ during model fitting. This dramatically reduces the dimension of the problem, which further increases computational speed and allows us to avoid using Laplace approximations for these quantities.} We {\color{yellow}derive values for}{\color{magenta}obtain draws of} $\gamma_{ijast}$ in a post-processing step{\color{magenta}, as in \eqref{eq:generate_gamma}}. {\color{yellow}Details are provided in the Appendix.} 
+
+{\color{magenta}The Laplace approximation underlying \texttt{TMB} belongs to a broader class of approximate Bayesian inference methods that have been shown to be reliable and computationally efficient. \citet{rue2017bayesian} use integrated nested Laplace approximations (INLA) to perform approximate Bayesian inference for latent Gaussian models (LGMs), a class that includes a large proportion of the statistical models used today. They show that INLA (and the associated \texttt{R-INLA} package) performs inference within a reasonable time frame and in most cases is both faster and more accurate than MCMC alternatives. \citet{osgood2023statistical} provide a large-scale simulation study that assesses and compares \texttt{R-INLA} and \texttt{TMB} for continuous spatial models, and find that the predictive fields from both methods are comparable in most situations. We have used our package \texttt{bage} (which builds on \texttt{TMB}) for many demographic estimation and forecasting problems and find the results satisfactory, as assessed by posterior predictive checks and held-out data validation.}
 
 {\color{cyan}John. Referee 1's comments: The reported runtimes are useful, but computational reporting could also be made more informative by specifying the exact processor, number of cores/threads, whether parallelization is used, peak memory consumption, and whether the reported times include generation of the posterior draws. Because computational scalability is emphasized as an advantage of the approach, even a limited empirical assessment of scaling with the number of cells and/or model
 terms would be valuable.} These times are relatively fast, given the number of parameters being estimated. {\color{yellow}All three models have 170,352 rate parameters ($\gamma_{ijast}$) and the dispersion parameter $\xi$. The baseline model has 3,443 $\beta$ parameters  and 27 hyper-parameters, the first expanded model has 10,814 $\beta$ parameters and 28 hyper-parameters, and the second expanded model has 121,379 $\beta$ parameters and 30 hyper-parameters.} 
@@ -325,7 +344,7 @@ terms would be valuable.} These times are relatively fast, given the number of p
 To perform model selection among the baseline model and the expanded models, we use
  the Watanabe-Akaike or Widely Applicable Information Criterion (WAIC) \citep{watanabe2010asymptotic}. As pointed out by Section 7.2 of \cite{Gelman2014bayesian}, compared to other information criteria that condition on a point estimate, WAIC has the desirable property of averaging over the posterior distribution, which is more compatible with Bayesian model selection.
 
-Let the posterior samples of $\gamma_{ijast}$ be $\{\gamma_{ijast}^{(r)}:\ r=1,\cdots,R\}$. Let $$p\left(y_{ijast}|\gamma_{ijast}^{(r)}w_{ijast}\right)$$ be the probability of $y_{ijast}$ in a Poisson distribution with rate $\gamma_{ijast}^{(r)}w_{ijast}$. We first obtain the computed log pointwise predictive density as
+{\color{yellow}Let the posterior samples of $\gamma_{ijast}$ be $\{\gamma_{ijast}^{(r)}:\ r=1,\cdots,R\}$. Let $$p\left(y_{ijast}|\gamma_{ijast}^{(r)}w_{ijast}\right)$$ be the probability of $y_{ijast}$ in a Poisson distribution with rate $\gamma_{ijast}^{(r)}w_{ijast}$. We first obtain the computed log pointwise predictive density as
 \begin{equation}
 \text{computed}\ lppd=\sum_{i,j,a,s,t}\log\left(\frac{1}{R}\sum_{r=1}^R p\left(y_{ijast}|\gamma_{ijast}^{(r)}w_{ijast}\right)\right).
 \end{equation}
@@ -333,36 +352,57 @@ This quantity measures the fit between the model and the data.
 Next, let $Var_{r=1}^R \left(\log p\left(y_{ijast}|\gamma_{ijast}^{(r)}w_{ijast}\right)\right)$ denote the posterior sample variance of the log predictive density for each data point $y_{ijast}$. The effective number of parameters is 
 \begin{equation}
 \text{computed}\ p_{WAIC}=\sum_{i,j,a,s,t}Var_{r=1}^R \left(\log p\left(y_{ijast}|\gamma_{ijast}^{(r)}w_{ijast}\right)\right).
+\end{equation}}
+
+{\color{magenta}We are interested in forecasting migration rates, and the expected rates $\mu_{ijast}$ for future years and the dispersion parameter $\xi$ are relevant to forecasting. To align with this forecasting objective, we calculate the WAIC conditional on the expected rates $\mu_{ijast}$ for historical years and $\xi$.}
+
+{\color{magenta}Let the posterior draws of $\mu_{ijast}$ for historical years be $\{\mu_{ijast}^{(r)}:\ r=1,\cdots,R\}$. Let $$p\left(y_{ijast}|P_{ijast},\mu_{ijast}^{(r)},\xi\right)$$ be the probability of $y_{ijast}$ under the negative binomial distribution given in \eqref{eq:negbinom}, conditional on $P_{ijast}$, $\mu_{ijast}^{(r)}$ and $\xi$. We first obtain the computed log pointwise predictive density as
+\begin{equation}
+\text{computed}\ lppd=\sum_{i,j,a,s,t}\log\left(\frac{1}{R}\sum_{r=1}^R p\left(y_{ijast}|P_{ijast},\mu_{ijast}^{(r)},\xi\right)\right).
 \end{equation}
+This quantity measures the fit between the model and the data.
+Next, let $Var_{r=1}^R \left(\log p\left(y_{ijast}|P_{ijast},\mu_{ijast}^{(r)},\xi\right)\right)$ denote the posterior sample variance of the log predictive density for each data point $y_{ijast}$. The effective number of parameters is 
+\begin{equation}
+\text{computed}\ p_{WAIC}=\sum_{i,j,a,s,t}Var_{r=1}^R \left(\log p\left(y_{ijast}|P_{ijast},\mu_{ijast}^{(r)},\xi\right)\right).
+\end{equation}}
 This quantity measures the complexity of the model. The WAIC represents a tradeoff between model fit and model complexity, and equals 
 \begin{equation}
 WAIC=-2(\text{computed}\ lppd-\text{computed}\ p_{WAIC}).
 \end{equation}
-We select the model with the smaller WAIC.
+{\color{yellow}We select the model with the smaller WAIC.} {\color{magenta}The model with the smallest WAIC is preferred.}
 
 \input{tables/tab_waic_all}
 
-The WAIC values are 8658.2 for the baseline model, 7986.9 for the first expanded model, and 7959.3 for the second expanded model. The second expanded model (with two four-way interaction terms) is preferred.
+{\color{yellow}The WAIC values are 8658.2 for the baseline model, 7986.9 for the first expanded model, and 7959.3 for the second expanded model.}{\color{magenta}Table~\ref{tab:waic} shows the WAICs for the four models given in Section~\ref{sec:models}. The main-effects model has a much larger WAIC than the other three models, indicating a poor fit to the data. Among the other three models, the} {\color{yellow}The} second expanded model (with two four-way interaction terms) {\color{yellow}is preferred.} {\color{magenta}has the smallest WAIC and is therefore preferred.}
 
 {\color{cyan} The WAIC values have changed a lot. I'm not sure why. I got Cursor to check my calculations.}
 
-\subsection{Replicate data test}
+\subsection{Replicate Data Test{\color{magenta}s}}
 
-We also subject each model to a replicate data test, also known as a posterior predictive check. In the replicate data test, we use 1,000 posterior samples of $\mu_{ijast}$ and $\xi$. Conditional on each such posterior sample, we first generate $\gamma_{ijast}$ from \eqref{eq:priormod1}, and then generate a replicated dataset 
+We also subject {\color{yellow}each model} {\color{magenta}the initial model and the two expanded models} to {\color{yellow}a} replicate data test{\color{magenta}s}, also known as {\color{yellow}a} posterior predictive check{\color{magenta}s}. In the replicate data test{\color{magenta}s}, we use 1,000 posterior samples of $\mu_{ijast}$ and $\xi$. Conditional on each such posterior sample, we first generate $\gamma_{ijast}$ from \eqref{eq:priormod1}, and then generate a replicated dataset 
 $\{y_{ijast}^{rep}\}$ from \eqref{eq:poisson}. For each combination of origin, destination, sex, and time, we calculate the minimum, maximum, mean, and standard deviation of the direct estimates (migration counts divided by population at risk) across age. We then compare these statistics between the replicated datasets and the original data. 
 
 For a given statistic (minimum, maximum, mean, or standard deviation of the direct estimates across age) and for each combination of origin, destination, sex, and time, the posterior predictive $p$-value is defined as the proportion of replicated datasets for which the statistic exceeds the statistic computed from the observed data. For each statistic, we then calculate, across all combinations of origin, destination, sex, and time, the proportion of combinations for which the posterior predictive 
-$p$-value is less than 0.05 or greater than 0.95. If the model fits the observed data well, the posterior predictive p-value is sometimes uniformly distributed, but generally tends to be more concentrated around 0.5 than a uniform distribution. Therefore, for a good model, the proportion of combinations for which the posterior predictive p-value is less than 0.05 or greater than 0.95 should be around 10\% or less.
+$p$-value is less than 0.05 or greater than 0.95. If the model fits the observed data well, the posterior predictive p-value is sometimes uniformly distributed, but generally tends to be more concentrated around 0.5 than a uniform distribution. Therefore, for a good model, the {\color{yellow}proportion}{\color{magenta}percentage} of combinations for which the posterior predictive p-value is less than 0.05 or greater than 0.95 should be around 10\% or less.
 
-Table~\ref{tab:ppc} presents these proportions for the three models. The second expanded model is preferred according to the replicate data test.
+Table~\ref{tab:ppc} presents these {\color{yellow}proportions}{\color{magenta}percentages} for the three models. The second expanded model is preferred according to the replicate data test.
 
 \input{tables/tab_ppc_all}
 
-\subsection{Held-back data tests}
+{\color{yellow}To summarize, both the WAIC criterion and the replicate data test support the second expanded model that captures complicated patterns in the observed data.
+}
 
+\subsection{{\color{magenta}Held-out Data Validation}}
 
+{\color{magenta}The dataset covers the COVID-19 period, and COVID-19 had large and heterogeneous effects on migration. To assess whether our models can capture these effects, we conduct three held-out validation exercises. In the first, we hold out data for 2020–2024, during and after the COVID-19 period, and fit the models using data from 2012–2019, which does not overlap with the COVID-19 period. In the second, we hold out data for 2017–2019, which does not include the COVID-19 period, and fit the models using data from 2012–2016. In the third, we hold out data for 2022–2024 and fit the models using data from 2012–2021, which partially covers the COVID-19 period.}
 
-{\color{cyan}Figure~\ref{fig:heldback} shows results from our heldback data tests.}
+{\color{magenta}Forecasting is done using the R package \texttt{bage}. Internally, \texttt{bage} forecasts the highest-level time-varying terms ($\alpha_t^{\text{time}}$, $\kappa_t^{\text{time}}$,  $\beta_{at}^{\text{age:time}}$, $\beta_{it}^{\text{orig:time}}$,
+$\beta_{jt}^{\text{dest:time}}$ and $\beta_{ijat}^{\text{orig:dest:age:time}}$), and then combines the results with estimates for the non-time-varying terms to generate values for the remaining unknowns. The calculations are done separately for each of the 1,000 draws from the posterior distribution for the parameter estimates, which allows uncertainty in the estimates to be propagated through to the forecasts.}
+
+{\color{magenta}We calculate several held-out predictive performance measures: the percentage of cells in the held-out data for which the observed migration count $y_{ijast}$
+  falls within its 50\% prediction interval; the corresponding percentage for the 95\% prediction interval; the median widths of the 50\% and 95\% prediction intervals for held-out cells; and the root mean squared error across held-out cells when the posterior medians of the forecasts are used as point predictions.}
+
+{\color{magenta}Figure~\ref{fig:heldback} shows results from our held-out data validation exercises, where models 0, 1, and 2 refer to the initial model, the first expanded model, and the second expanded model.}
 
  \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_heldback}
@@ -371,20 +411,11 @@ Table~\ref{tab:ppc} presents these proportions for the three models. The second 
     \label{fig:heldback}  
 \end{figure}
 
+\section{{\color{magenta} Results on Estimates and Forecasts}}
+\subsection{Estimates and Forecasts of Internal Migration Rates}
 
- To summarize, both the WAIC criterion and the replicate data test support the second expanded model that captures complicated patterns in the observed data.
-
-
- \subsection{Sensitivity test}
-
-{\color{cyan} See figures~\ref{fig:sensitivity_female} and \ref{fig:sensitivity_male} in the Appendix}
-
- 
- 
-\section{Estimates and Forecasts of Internal Migration Rates}
-
-We use the second expanded model to forecast internal migration rates for years 2025-2030. Forecasting is done using the R package \texttt{bage}. Internally, \texttt{bage} forecasts the highest-level time-varying terms ($\alpha_t^{\text{time}}$, $\kappa_t^{\text{time}}$,  $\beta_{at}^{\text{age:time}}$, $\beta_{it}^{\text{orig:time}}$,
-$\beta_{jt}^{\text{dest:time}}$ and $\beta_{ijat}^{\text{orig:dest:age:time}}$), and then combines the results with estimates for the non-time-varying terms to generate values for the remaining unknowns. The calculations are done separately for each of the 1,000 draws from the posterior distribution for the parameter estimates, which allows uncertainty in the estimates to be propagated through to the forecasts.
+We use the second expanded model to forecast internal migration rates for years 2025-2030. {\color{yellow}Forecasting is done using the R package \texttt{bage}. Internally, \texttt{bage} forecasts the highest-level time-varying terms ($\alpha_t^{\text{time}}$, $\kappa_t^{\text{time}}$,  $\beta_{at}^{\text{age:time}}$, $\beta_{it}^{\text{orig:time}}$,
+$\beta_{jt}^{\text{dest:time}}$ and $\beta_{ijat}^{\text{orig:dest:age:time}}$), and then combines the results with estimates for the non-time-varying terms to generate values for the remaining unknowns. The calculations are done separately for each of the 1,000 draws from the posterior distribution for the parameter estimates, which allows uncertainty in the estimates to be propagated through to the forecasts.}
 
  \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_forecast_london_se}
@@ -405,14 +436,19 @@ $\beta_{jt}^{\text{dest:time}}$ and $\beta_{ijat}^{\text{orig:dest:age:time}}$),
 \end{figure}
 
 As an illustration, Figure~\ref{fig:forecast_london_se}, Figure~\ref{fig:forecast_se_london} and Figure~\ref{fig:forecast_london_ne} show, respectively, estimates and forecasts of migration rates from London to the South East, from the South East to London, and from London to the North East. For the first two origin-destination pairs, the migration counts are not sparse. The modeled estimates track the direct estimates well. For the last origin-destination pair, the migration counts are rather sparse. In the observed data, there are 129 cells with zero migration counts from London to the North East. The modeled estimates appear to do a good job of separating signal and noise. In all three figures, the forecasts capture the changes in age profiles over time for each origin-destination pair.
+
+{\color{magenta} Figures~\ref{fig:forecast_od_female} and \ref{fig:forecast_od_male} in Appendix B show forecasts for all origin-destination pairs in 2030.}
 \clearpage
 
-{\color{cyan} Figures~\ref{fig:forecast_od_female} and \ref{fig:forecast_od_male} in the Appendix show forecasts for all combinations of origin and destination in 2030.}
+\subsection{{\color{magenta}Estimates of Hyper-parameters}}
 
-{\color{cyan} Table~\ref{tab:hyper} shows estimates of hyper-parameters bla bla bla}
+{\color{magenta} Table~\ref{tab:hyper} shows the point estimates and 95\% credible intervals for the hyper-parameters. Except for $\sigma_{\text{orig:dest}}$, the standard deviation parameters for the interactions are all relatively small, indicating strong regularization. Regarding the two coefficient parameters in the AR2 prior, $\phi_1$ and $\phi_2$, Table~\ref{tab:hyper} only shows their marginal estimates; but, as mentioned in Section~\ref{subsec:priors}, we checked their posterior draws and found that the stationarity conditions for the AR2 prior were satisfied.}
 
 \input{tables/tab_hyper_all}
 
+ \subsection{{\color{magenta}A Sensitivity Analysis}}
+
+ {\color{magenta}Because the rates are our inferential target, we assess whether their estimates and forecasts are sensitive to the prior specification. Specifically, we conduct a sensitivity analysis with respect to the prior scale for the standard deviation parameters. In our main results, all standard deviation parameters have a prior scale of 1. We also considered prior scales of 0.1 and 0.5 and found that the estimates and forecasts of the rates were not sensitive to the choice of prior scale. We illustrate the results in Figures~\ref{fig:sensitivity_female} and \ref{fig:sensitivity_male} in the Appendix C.}
 
 
 \section{Conclusion}
@@ -437,50 +473,40 @@ Bayesian models have a bad reputation among applied modelers for being slow. As 
 
 %\appendix
 
- \begin{figure}[ht]
-\includegraphics[width = 0.5\textwidth]{figures/fig_map_england}
-  \centering
-  \caption{The regions of England. Source: \citet{ons2024regions}.}
-    \label{fig:map_england}  
-\end{figure}
-
 \section*{Appendix}
-The properties of the Poisson, Gamma, and Negative Binomial distributions imply that \eqref{eq:poisson} and \eqref{eq:priormod1} in the main text can be rewritten as
-\begin{equation}
-  y_{ijast} \sim \text{NegBinom}\left(\xi^{-1}, (1 + \mu_{ijast} w_{iast} \xi)^{-1}\right)
-\end{equation}
-\citep{norton2018sampling}, with the $\gamma_{ijast}$ integrated out. This is the format we use internally for estimation. We generate values for $\gamma_{ijast}$  in a post-processing step, using the fact that
-\begin{equation}
-  \gamma_{ijast} \mid y_{ijast}, w_{iast}, \mu_{ijast}, \xi \sim \text{Gamma}\left(y_{ijast} + \xi^{-1}, w_{iast} + (\xi \mu_{ijast})^{-1}\right).
-\end{equation}
 
- \begin{figure}[ht]
-\includegraphics[width = 0.7\textwidth]{figures/fig_sensitivity_all_female}
-  \centering
-  \caption{Sensitivity test, females}
-    \label{fig:sensitivity_female}  
-\end{figure}
-
-\begin{figure}[ht]
-\includegraphics[width = 0.7\textwidth]{figures/fig_sensitivity_all_male}
-  \centering
-  \caption{Sensitivity test, males}
-    \label{fig:sensitivity_male}  
-\end{figure}
-
+\subsection*{{\color{magenta}A. More Results on Forecasting}}
+{\color{magenta}Figure~\ref{fig:forecast_od_female} and ~\ref{fig:forecast_od_male} present forecasts of migration rates for all origin-destination pairs in 2030, for females and males, respectively.}
  \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_forecast_od_female}
   \centering
-  \caption{Forecasts for all origins and destinations, 2030, females}
+  \caption{Forecasts {\color{magenta}of migration rates} {\color{yellow}for all origins and destinations}{\color{magenta}for all origin-destination pairs}, 2030, females}
     \label{fig:forecast_od_female}  
 \end{figure}
 
   \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_forecast_od_male}
   \centering
-  \caption{Forecasts for all origins and destinations, 2030, males}
+  \caption{Forecasts {\color{magenta}of migration rates} {\color{yellow}for all origins and destinations}{\color{magenta}for all origin-destination pairs}, 2030, males}
     \label{fig:forecast_od_male}  
 \end{figure}
 
+\clearpage
+\subsection*{{\color{magenta}B. Results on Sensitivity Analysis}}
+{\color{magenta}Figures~\ref{fig:sensitivity_female} and ~\ref{fig:sensitivity_male} present estimates and forecasts of migration rates from London to the South East for different prior scale specifications, for females and males, respectively. The results were not sensitive to the choice of prior scale.}
+
+ \begin{figure}[ht]
+\includegraphics[width = 0.7\textwidth]{figures/fig_sensitivity_all_female}
+  \centering
+  \caption{{\color{magenta}Estimates and forecasts of female migration rates from London to the South East for different prior scale specifications}}
+    \label{fig:sensitivity_female}  
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[width = 0.7\textwidth]{figures/fig_sensitivity_all_male}
+  \centering
+  \caption{{\color{magenta}Estimates and forecasts of male migration rates from London to the South East for different prior scale specifications}}
+    \label{fig:sensitivity_male}  
+\end{figure}
 
 \end{document}
