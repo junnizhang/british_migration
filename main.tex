@@ -58,17 +58,18 @@ It is not easy to identify which features of historical trends in internal migra
 
 One way to extract complex signals from {\color{yellow}sparse,} noisy datasets is to use Bayesian hierarchical models \citep{Gelman2014bayesian}. These models allow analysts to encode expectations about the qualitative behaviour of model components, through the use of prior distributions, and also to borrow strength across subgroups within the population, to cope with sparsity. Bayesian hierarchical models have been increasingly popular among researchers carrying out sub-national demographic estimation and forecasting \citep{lynch2010obtaining,schmertmann2013bayes,bijak2016bayesian,alexander2017flexible,bryant2018bayesian,wang2022spatiotemporal,alexander2022bayesian,dharamshi2025jointly,omenti2026bayesian}. 
 
-There is a limited literature on Bayesian methods for modelling and forecasting internal migration \citep{wisniowski2014baysian,zhang2020bayesian,furfaro2021bayesian,goes2026probabilistic}. {\color{magenta}\cite{siriban2026review}, 
-\cite{goes2026probabilistic} ***}
+{\color{yellow}There is a limited literature on Bayesian methods for modelling and forecasting internal migration \citep{wisniowski2014baysian,zhang2020bayesian,furfaro2021bayesian,goes2026probabilistic}.} {\color{magenta} \citet{wisniowski2014baysian} develop a time series model for the logarithm of the total count of out-migration from Scotland to the rest of the UK, international immigration to Scotland, and international emigration from Scotland. \citet{furfaro2021bayesian} develop a hierarchical regression model for migration counts from province 
+$i$ to province $j$ at time $t$ in Italy. The migration counts in these two studies are not disaggregated by age or sex. For each region in Bavaria, Germany, and for each sex separately, \citet{goes2026probabilistic} develop a time series model for total net migration counts, use a mixed-effects model to decompose total net migration counts into in-migration and out-migration counts, and use a Dirichlet regression to model the age patterns of in- and out-migration.}
 
+{\color{magenta}After more than a decade of effort, we have developed a flexible Bayesian hierarchical modeling framework for estimating and forecasting disaggregated demographic rates. We have also developed flexible and computationally efficient software for fitting, checking, and using these models. In this paper, we apply the framework to jointly model internal migration rates in England, disaggregated by region of origin, region of destination, single year of age, sex, and calendar year for the period 2012-2024. Within this framework, we specify several models of increasing complexity. }
+{\color{yellow}In this paper, we develop several Bayesian models that can capture complex patterns in internal migration, and apply them to estimate internal migration rates for the period 2012–2024 for the UK, disaggregated by single year of age, sex, region of origin and region of destination.} We perform model selection and model checking, and then use the selected model to forecast internal migration rates over the period 2025–2030. {\color{magenta}Almost all computations are carried out using our software.}{\color{yellow}An important part of our efficient computation builds on the ideas in \cite{liu2001monte}, and in particular on the collapsed Gibbs sampling in \cite{liu1994collapsed}.} 
 
-{\color{magenta}After more than a decade of effort, we have developed a flexible Bayesian hierarchical modeling framework for estimating and forecasting disaggregated demographic rates. We have also developed flexible and computationally efficient software for fitting, checking, and using these models. In this paper, we apply the framework to estimate internal migration rates in England from 2012 to 2024, disaggregated by single year of age, sex, and origin and destination region. Within this framework, we specify several models of increasing complexity. }
-{\color{yellow}In this paper, we develop several Bayesian models that can capture complex patterns in internal migration, and apply them to estimate internal migration rates for the period 2012–2024 for the UK, disaggregated by single year of age, sex, region of origin and region of destination.} We perform model selection and model checking, and then use the selected model to forecast internal migration rates over the period 2025–2030. {\color{magenta}Almost all computations are carried out using our software.}{\color{yellow}An important part of our efficient computation builds on the ideas in \cite{liu2001monte}, and in particular on the collapsed Gibbs sampling in \cite{liu1994collapsed}.}
+{\color{magenta}\citet{zhang2020bayesian} develop Bayesian hierarchical models within our modeling framework to model internal migration rates in Iceland, also disaggregated by region of origin, region of destination, single year of age, sex, and calendar year. The migration patterns in that setting are less heterogeneous than those considered here, partly because the data period precedes the COVID-19 pandemic. Consequently, the models in \citet{zhang2020bayesian} are less complex than those used here.}
 
 The remaining parts of the paper are organized as follows. Section 2 presents the UK internal migration data and patterns in the data. Section 3 discusses several Bayesian models and covers the computation. Section 4 then turns to model selection and model checking. Section 5 presents results on estimation and forecasting. Section 6 then concludes. All data and computer code for the analysis are available at [url for GitHub repository].
 
 \section{Data}\label{sec:data}
-Our data consist of counts of internal migration and population size by single year of age (up to age 90+), sex, region of origin, region of destination, and calendar year for the period 2012–2024. The data were obtained from the Office for National Statistics website \citep{ons2025internalmigration,ons2025population}{\color{magenta}; detailed internal migration data are available only for 2012–2024}. There are 9 regions {\color{magenta} in England}: London, East of England (shortened to ``E"), North East (``NE"), North West (``NW"), South East (``SE"), South West (``SW"), East Midlands (``EM"), West Midlands (``WM"), and Yorkshire and The Humber (``YH"). 
+Our data consist of counts of internal migration and population size by {\color{magenta}region of origin, region of destination,} single year of age (up to age 90+), sex, {\color{yellow}region of origin, region of destination,} and calendar year for the period 2012–2024. The data were obtained from the Office for National Statistics website \citep{ons2025internalmigration,ons2025population}{\color{magenta}; detailed internal migration data are available only for 2012–2024}. There are 9 regions {\color{magenta} in England}: London, East of England (shortened to ``E"), North East (``NE"), North West (``NW"), South East (``SE"), South West (``SW"), East Midlands (``EM"), West Midlands (``WM"), and Yorkshire and The Humber (``YH"). 
 {\color{magenta}Figure~\ref{fig:map_england} shows a map of these regions.}
  \begin{figure}[htp]
 \includegraphics[width = 0.5\textwidth]{figures/fig_map_england}
@@ -336,6 +337,7 @@ $\xi$. \texttt{TMB} combines a Laplace approximation and numerical integration \
 
 {\color{cyan}John. Referee 1's comments: The reported runtimes are useful, but computational reporting could also be made more informative by specifying the exact processor, number of cores/threads, whether parallelization is used, peak memory consumption, and whether the reported times include generation of the posterior draws. Because computational scalability is emphasized as an advantage of the approach, even a limited empirical assessment of scaling with the number of cells and/or model
   terms would be valuable.} These times are relatively fast, given the number of parameters being estimated. {\color{yellow}All three models have 170,352 rate parameters ($\gamma_{ijast}$) and the dispersion parameter $\xi$. The baseline model has 3,443 $\beta$ parameters  and 27 hyper-parameters, the first expanded model has 10,814 $\beta$ parameters and 28 hyper-parameters, and the second expanded model has 121,379 $\beta$ parameters and 30 hyper-parameters.}
+  {\color{cyan} Table~\ref{tab:resources}} shows computation times and memory usage for the initial and expanded models. The computations were performed on a 2023 M2 MacBook Pro. No parallelization was used. The fitting process included taking 2000 draws from the posterior distribution for the hyper-parameters (in some cases on the log or logit scale), but did not include post-processing to obtain values for the $\gamma_{ijast}$. Computations for the second extended model took around 7 times longer than those for the initial model. However, at 1531 seconds (26 minutes) these times are still fast for a high-dimensional Bayesian model.}
 
 \input{tables/tab_resources_all.tex}
 
@@ -401,10 +403,11 @@ Table~\ref{tab:ppc} presents these {\color{yellow}proportions}{\color{magenta}pe
 {\color{magenta}Forecasting is done using the R package \texttt{bage}. Internally, \texttt{bage} forecasts the highest-level time-varying terms ($\alpha_t^{\text{time}}$, $\kappa_t^{\text{time}}$,  $\beta_{at}^{\text{age:time}}$, $\beta_{it}^{\text{orig:time}}$,
 $\beta_{jt}^{\text{dest:time}}$ and $\beta_{ijat}^{\text{orig:dest:age:time}}$), and then combines the results with estimates for the non-time-varying terms to generate values for the remaining unknowns. The calculations are done separately for each of the 1,000 draws from the posterior distribution for the parameter estimates, which allows uncertainty in the estimates to be propagated through to the forecasts.}
 
-{\color{magenta}We calculate several held-out predictive performance measures: the percentage of cells in the held-out data for which the observed migration count $y_{ijast}$
-  falls within its 50\% prediction interval; the corresponding percentage for the 95\% prediction interval; the median widths of the 50\% and 95\% prediction intervals for held-out cells; and the root mean squared error across held-out cells when the posterior medians of the forecasts are used as point predictions.}
+{\color{magenta}We calculate several held-out predictive performance measures: the percentage of cells in the held-out data for which the direct estimate of the migration rate, 
+$y_{ijast}/P_{ijast}$, falls within the corresponding 50\% prediction interval; the corresponding percentage for the 95\% prediction interval; the median widths of the 50\% and 95\% prediction intervals for held-out cells; and the root mean squared error across held-out cells, computed using the posterior medians of the forecasts as point predictions.}
 
-{\color{magenta}Figure~\ref{fig:heldback} shows results from our held-out data validation exercises, where models 0, 1, and 2 refer to the initial model, the first expanded model, and the second expanded model.}
+{\color{magenta}Figure~\ref{fig:heldback} shows results from our held-out validation exercises. When data for 2020–2024 are held out, the main-effects model achieves approximately correct coverage, but its median credible interval widths and RMSE are quite large, making the model unsuitable for practical use. Because the data used for estimation does not overlap with the COVID-19 period, whereas the data held out overlap with the COVID-19 period, the initial model, the first and second expanded models cannot predict well, with both 50\% and 90\% prediction intervals under-cover the observed migration counts.}
+
 
  \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_heldback}
@@ -412,6 +415,10 @@ $\beta_{jt}^{\text{dest:time}}$ and $\beta_{ijat}^{\text{orig:dest:age:time}}$),
   \caption{Some heldback data results}
     \label{fig:heldback}  
 \end{figure}
+
+{\color{magenta}When data for 2017–2019 are held out, neither the data used for estimation nor the held-out data overlap with the COVID-19 period. All four models achieve near-nominal or slightly conservative coverage, but the median prediction interval widths and RMSE of the main-effects model are much larger than those of the other three models. The two expanded models have smaller RMSE than the initial model, with the second expanded model having the smallest RMSE.}
+
+{\color{magenta}When data for 2022–2024 are held out, the estimation data partially overlap with the COVID-19 period, and the held-out data also partially overlap with it. Model performance is similar to that obtained when data for 2017–2019 are held out. This suggests that even with only two years of COVID-19-period data (2020–2021) used in estimation, the first and second expanded models are already able to capture the heterogeneous changes in migration rates. These results provide evidence that these two models, especially the second expanded model, can be reliably used for forecasting when the estimation data cover 2012–2024, including the full COVID-19 period as well as several years before it and the year immediately after it.}
 
 \section{{\color{magenta} Results on Estimates and Forecasts}}
 \subsection{Estimates and Forecasts of Internal Migration Rates}
@@ -422,24 +429,24 @@ $\beta_{jt}^{\text{dest:time}}$ and $\beta_{ijat}^{\text{orig:dest:age:time}}$),
  \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_forecast_london_se}
   \centering
-  \caption{Estimates and forecasts of migration rates from London to the South East. The solid lines represent point estimates, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_london_se}  
+  \caption{Estimates and forecasts of migration rates from London to the South East. The solid lines represent point estimates {\color{magenta}(posterior medians)}, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_london_se}  
 \end{figure}
 
  \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_forecast_se_london}
   \centering
-  \caption{Estimates and forecasts of migration rates from the South East to London. The solid lines represent point estimates, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_se_london}  
+  \caption{Estimates and forecasts of migration rates from the South East to London. The solid lines represent point estimates {\color{magenta}(posterior medians)}, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_se_london}  
 \end{figure}
 
  \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_forecast_london_ne}
   \centering
-  \caption{Estimates and forecasts of migration rates from London to the North East. The solid lines represent point estimates, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_london_ne}  
+  \caption{Estimates and forecasts of migration rates from London to the North East. The solid lines represent point estimates {\color{magenta}(posterior medians)}, and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}\label{fig:forecast_london_ne}  
 \end{figure}
 
 As an illustration, Figure~\ref{fig:forecast_london_se}, Figure~\ref{fig:forecast_se_london} and Figure~\ref{fig:forecast_london_ne} show, respectively, estimates and forecasts of migration rates from London to the South East, from the South East to London, and from London to the North East. For the first two origin-destination pairs, the migration counts are not sparse. The modeled estimates track the direct estimates well. For the last origin-destination pair, the migration counts are rather sparse. In the observed data, there are 129 cells with zero migration counts from London to the North East. The modeled estimates appear to do a good job of separating signal and noise. In all three figures, the forecasts capture the changes in age profiles over time for each origin-destination pair.
 
-{\color{magenta} Figures~\ref{fig:forecast_od_female} and \ref{fig:forecast_od_male} in Appendix B show forecasts for all origin-destination pairs in 2030.}
+{\color{magenta} Figures~\ref{fig:forecast_od_female} and \ref{fig:forecast_od_male} in Appendix A show forecasts for all origin-destination pairs in 2030.}
 \clearpage
 
 \subsection{{\color{magenta}Estimates of Hyper-parameters}}
@@ -450,7 +457,7 @@ As an illustration, Figure~\ref{fig:forecast_london_se}, Figure~\ref{fig:forecas
 
  \subsection{{\color{magenta}A Sensitivity Analysis}}
 
- {\color{magenta}Because the rates are our inferential target, we assess whether their estimates and forecasts are sensitive to the prior specification. Specifically, we conduct a sensitivity analysis with respect to the prior scale for the standard deviation parameters. In our main results, all standard deviation parameters have a prior scale of 1. We also considered prior scales of 0.1 and 0.5 and found that the estimates and forecasts of the rates were not sensitive to the choice of prior scale. We illustrate the results in Figures~\ref{fig:sensitivity_female} and \ref{fig:sensitivity_male} in the Appendix C.}
+ {\color{magenta}Because the rates are our inferential target, we assess whether their estimates and forecasts are sensitive to the prior specification, again focusing on the second expanded model. Specifically, we conduct a sensitivity analysis with respect to the prior scale for the standard deviation parameters. In our main results, all standard deviation parameters have a prior scale of 1. We also considered prior scales of 0.1 and 0.5 and found that the estimates and forecasts of the rates were not sensitive to the choice of prior scale. We illustrate the results in Figures~\ref{fig:sensitivity_female} and \ref{fig:sensitivity_male} in the Appendix B.}
 
 
 \section{Conclusion}
@@ -482,14 +489,14 @@ Bayesian models have a bad reputation among applied modelers for being slow. As 
  \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_forecast_od_female}
   \centering
-  \caption{Forecasts {\color{magenta}of migration rates} {\color{yellow}for all origins and destinations}{\color{magenta}for all origin-destination pairs}, 2030, females}
+  \caption{\color{magenta}Forecasts {of migration rates for all origin-destination pairs, 2030, females. The solid lines represent point estimates (posterior medians), and the light bands represent 95\% credible intervals.}}
     \label{fig:forecast_od_female}  
 \end{figure}
 
   \begin{figure}[ht]
 \includegraphics[width = \textwidth]{figures/fig_forecast_od_male}
   \centering
-  \caption{Forecasts {\color{magenta}of migration rates} {\color{yellow}for all origins and destinations}{\color{magenta}for all origin-destination pairs}, 2030, males}
+  \caption{\color{magenta}Forecasts {of migration rates for all origin-destination pairs, 2030, males. The solid lines represent point estimates (posterior medians), and the light bands represent 95\% credible intervals.}}
     \label{fig:forecast_od_male}  
 \end{figure}
 
@@ -500,14 +507,14 @@ Bayesian models have a bad reputation among applied modelers for being slow. As 
  \begin{figure}[ht]
 \includegraphics[width = 0.7\textwidth]{figures/fig_sensitivity_all_female}
   \centering
-  \caption{{\color{magenta}Estimates and forecasts of female migration rates from London to the South East for different prior scale specifications}}
+  \caption{{\color{magenta}Estimates and forecasts of female migration rates from London to the South East for different prior scale specifications. The solid lines represent point estimates (posterior medians), and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}}
     \label{fig:sensitivity_female}  
 \end{figure}
 
 \begin{figure}[ht]
 \includegraphics[width = 0.7\textwidth]{figures/fig_sensitivity_all_male}
   \centering
-  \caption{{\color{magenta}Estimates and forecasts of male migration rates from London to the South East for different prior scale specifications}}
+  \caption{{\color{magenta}Estimates and forecasts of male migration rates from London to the South East for different prior scale specifications. The solid lines represent point estimates (posterior medians), and the light bands represent 95\% credible intervals. The red dots represent direct estimates.}}
     \label{fig:sensitivity_male}  
 \end{figure}
 
