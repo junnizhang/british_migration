@@ -4,174 +4,193 @@
 \usepackage{lmodern}
 \usepackage[margin=25mm]{geometry}
 \usepackage{xcolor}
+\usepackage{natbib}
+\usepackage{amsmath}
 \usepackage{microtype}
 \usepackage{needspace}
 \usepackage[hidelinks]{hyperref}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.6em}
-\definecolor{replyblue}{RGB}{25,65,105}
+\definecolor{replyblue}{RGB}{11, 83, 148}
 % Write your reply inside each response environment, replacing the blank line.
 % Adjust this length to change the minimum blank space below each comment.
 \newlength{\replyspace}
-\setlength{\replyspace}{25mm}
-\newenvironment{response}{\par\nopagebreak\textbf{\textcolor{replyblue}{Response:}}\par\begingroup\color{replyblue}}{\par\endgroup\vspace{\replyspace}}
+\setlength{\replyspace}{5mm}
+\newenvironment{response}{\par\addvspace{\replyspace}\nopagebreak\textbf{\textcolor{replyblue}{Response:}}\par\begingroup\color{replyblue}}{\par\endgroup\vspace{\replyspace}}
 \newcommand{\refcomment}[2]{\par\Needspace{5\baselineskip}\subsection*{#1}#2\par}
+
 \title{Response to Referees\\[0.5em]\large Bayesian Estimation and Forecasting of Internal Migration Rates: An Application to the UK}
 \author{}
 \date{}
 \begin{document}
 \maketitle
 \vspace{-2em}
-\textit{Reply template. Referee comments are reproduced below in their original order. Type each reply in the corresponding response environment.}
+We thank the referees for their careful and constructive reports. Below we provide a point-by-point response to the referees' comments, which are reproduced.
 
 \section*{Referee 1}
 \textbf{Recommendation: Major Revision}
-\refcomment{Overall assessment}{
-This manuscript addresses an important applied problem in demographic estimation and forecasting. The highly disaggregated UK internal-migration data present genuine challenges arising from heterogeneity across age, sex, origin, destination, and time, and the authors construct a flexible Bayesian hierarchical framework that is capable of borrowing information across a very large number of cells. The manuscript is generally clearly written, the progression from the baseline specification to richer interaction structures is easy to follow, and the reported computational feasibility of fitting a large hierarchical model is potentially useful for applied demographic work. The empirical examples also illustrate why flexible age and origin--destination structure can matter in practice. At the same time, I believe substantial revision is needed before the contribution of the paper can be properly assessed. In particular, the cur
-rent manuscript does not yet distinguish clearly enough between methodological development and the application/integration of standard Bayesian hierarchical components; the regularization mechanism in the very high-dimensional specification needs a more explicit treatment; the inferential computation requires a clearer description; and the forecasting claims need to be supported by genuine out-of-sample validation. I therefore recommend major revision. My main comments are below.
-}
-\begin{response}
-% Write your response here.
 
+\textbf{Overall assessment}
+
+This manuscript addresses an important applied problem in demographic estimation and forecasting. The highly disaggregated UK internal-migration data present genuine challenges arising from heterogeneity across age, sex, origin, destination, and time, and the authors construct a flexible Bayesian hierarchical framework that is capable of borrowing information across a very large number of cells. The manuscript is generally clearly written, the progression from the baseline specification to richer interaction structures is easy to follow, and the reported computational feasibility of fitting a large hierarchical model is potentially useful for applied demographic work. The empirical examples also illustrate why flexible age and origin--destination structure can matter in practice. At the same time, I believe substantial revision is needed before the contribution of the paper can be properly assessed. In particular, the current manuscript does not yet distinguish clearly enough between methodological development and the application/integration of standard Bayesian hierarchical components; the regularization mechanism in the very high-dimensional specification needs a more explicit treatment; the inferential computation requires a clearer description; and the forecasting claims need to be supported by genuine out-of-sample validation. I therefore recommend major revision. My main comments are below.
+\begin{response}
+Thank you for your careful reading and constructive suggestions. We have carefully addressed all of your comments and made substantial revisions accordingly.
 \end{response}
 
 \section*{Referee 1: Major comments}
 \refcomment{Major comment 1}{
-{\color{orange}{JZ}}
 The methodological contribution and the gap in the existing literature need to be stated much more precisely. The manuscript repeatedly states that it ``develops several Bayesian models.'' However, as currently presented, the three models appear to be nested specifications within one common hierarchical framework rather than substantially distinct Bayesian models. The baseline model combines a Poisson--Gamma hierarchy with standard Gaussian hierarchical effects, random-walk priors, an AR(2) temporal component, and interaction terms; the two expanded specifications then add higher-order interaction terms. I encourage the authors to clarify exactly what is new. It would be helpful to distinguish explicitly among: (i) a new statistical model or prior construction, (ii) a new computational strategy, and (iii) an application-specific integration of established Bayesian hierarchical components for highly disaggregated migration data. If the principal contribution is the construction of a sufficiently flexible and computationally feasible modeling framework for this application, that is a legitimate contribution, but it should be stated directly and the methodological claims should be calibrated accordingly. Relatedly, the introduction currently establishes mainly that the Bayesian literature on internal migration is limited. This is not yet a sufficiently specific methodological gap. The revised manuscript should compare the proposed framework directly with the closest existing approaches and explain which limitation of previous methods motivates each important modeling component. For example, are existing methods unable to accommodate single-year age profiles, origin--destination-specific heterogeneity, changing age profiles over time, very high-order interactions, or the required level of computational scalability? A concise comparison table covering dimensions modeled, age smoothing, origin--destination structure, temporal dynamics, uncertainty quantification, and computational strategy would substantially strengthen the motivation.
 }
 \begin{response}
-% Write your response here.
+Thanks for the comment. We have now clarified in the Introduction that the Bayesian models in this paper are applications of a flexible Bayesian hierarchical modeling framework for estimating and forecasting disaggregated demographic rates, developed through more than a decade of work. We have also clarified that we have developed flexible and computationally efficient software for fitting, checking, and using these models.
 
+In the Introduction, we note that we have found only four prior papers in the Bayesian literature on internal migration.  \citet{wisniowski2014baysian} develop a time series model for the logarithm of the total count of out-migration from Scotland to the rest of the UK, international immigration to Scotland, and international emigration from Scotland. \citet{furfaro2021bayesian} develop a hierarchical regression model for migration counts from province 
+$i$ to province $j$ at time $t$ in Italy. The migration counts in these two studies are not disaggregated by age or sex. For each region in Bavaria, Germany, and for each sex separately, \citet{goes2026probabilistic} develop a time series model for total net migration counts, use a mixed-effects model to decompose total net migration counts into in-migration and out-migration counts, and use a Dirichlet regression to model the age patterns of in- and out-migration.
+
+By modeling migration rates rather than migration counts, we separate changes in the underlying propensity to migrate from changes in the size and age–sex composition of the population at risk. Furthermore, compared with the separate modeling approach of \citet{goes2026probabilistic}, our joint model allows age profiles of migration to evolve differently over time across regions and sexes while still permitting shared trends across regions or sexes.
+
+\citet{zhang2020bayesian} develop Bayesian hierarchical models within our modeling framework to model internal migration rates in Iceland, also disaggregated by region of origin, region of destination, single year of age, sex, and calendar year. The migration patterns in that setting are less heterogeneous than those considered here, partly because the data period precedes the COVID-19 pandemic. Consequently, the models in \citet{zhang2020bayesian} are less complex than those used in the current paper.
+
+Please see the Introduction for the changes made.
 \end{response}
 
 \refcomment{Major comment 2}{
-{\color{orange}{JB - tables of hyperparameters estimates, and sensitivity tests; JZ - text}}
 The treatment of high dimensionality, regularization, and shrinkage requires a substantially deeper explanation. The most complex specification contains 121,379 $\beta$ parameters, in addition to 170,352 cell-specific rate quantities. Given that the dataset itself contains 170,352 observed cells, the effective regularization of the model is central to its statistical credibility. Equation (3) gives a useful interpretation of shrinkage of the cell-specific rate $\gamma_{ijast}$ toward its prior mean $\mu_{ijast}$. However, this does not explain how the very large collection of $\beta$ parameters, including the high-order interactions, is regularized. My reading is that the principal mechanism is structured smoothing and partial pooling through Gaussian priors, shared variance parameters, and RW1/RW2 specifications. This should be made explicit. In particular, the current model does not appear to perform sparse shrinkage or interaction selection in the usual sense; instead, it allows all specified interactions to enter while controlling their roughness and magnitude through hierarchical priors. I suggest that the authors provide more evidence on the amount of regularization actually induced by the model. At minimum, posterior summaries of the major variance/smoothing parameters would be informative. Sensitivity to the half-normal hyperpriors would also be useful, especially for the high-order interaction terms. More generally, the authors should explain what prevents the most complex model from becoming a near-saturated smoother and should quantify, where possible, the effective complexity of the higher-order components. This issue is particularly important because the model-comparison procedure favors progressively richer interaction structures.
 }
 \begin{response}
-  {\color{cyan} We have added estimates of hyper-parameters and sensitivity tests.}
+Thanks for the comment. We have added a new section, ``3.4 Model Identification and Regularization'', to the manuscript. As you point out, we do not perform sparse shrinkage or selection of interactions in the usual sense (e.g., spike-and-slab variable selection in \cite{george1993variable} or horseshoe shrinkage in \cite{carvalho2010horseshoe}). Instead, the roughness and magnitude of the specified interactions are controlled through hierarchical priors. 
 
-  
+We have also added a new section, ``5.2 Estimates of Hyper-parameters'', to the manuscript. Table 5 there shows the point estimates and 95\% credible intervals for the hyper-parameters. Except for $\sigma_{\text{orig:dest}}$, the standard deviation parameters for the interactions are all relatively small, indicating strong regularization. 
 
+We have also added a new section, ``5.3 A Sensitivity Analysis'', to the manuscript. We conduct a sensitivity analysis with respect to the prior scale for the standard deviation parameters. In our main results, all standard deviation parameters have a prior scale of 1. We also considered prior scales of 0.1 and 0.5 and found that the estimates and forecasts of the rates were not sensitive to the choice of prior scale.
+
+Please see the corresponding sections for the changes made.
 \end{response}
 
 \refcomment{Major comment 3}{
-{\color{orange}{JZ?}}
-The computational inference procedure needs a clearer and more complete description. Section 3.3 does not currently provide enough information to understand exactly how posterior inference is performed. The manuscript states that the implementation uses TMB, Laplace approximation, numerical integration, and analytic marginalization of the cell-specific rates, but it later refers to 1,000 posterior draws without explaining how these draws are obtained. Please state clearly which quantities are optimized, which quantities are integrated using the Laplace approximation, and how posterior draws of the parameters, hyperparameters, and derived quantities are generated. If an MCMC step is used at any stage, appropriate convergence and sampling-efficiency diagnostics should be reported (for example, multiple-chain diagnostics, $\widehat{R}$, effective sample sizes, and, where relevant, ESS per second). If the reported posterior draws instead arise from a Gaussian/Laplace approximation, then standard MCMC diagnostics are not applicable; in that case, the authors should explain the approximation explicitly and provide some assessment of its accuracy, ideally through comparison with a more exact posterior computation on one or more reduced-size examples. The reported runtimes are useful, but computational reporting could also be made more informative by specifying the exact processor, number of cores/threads, whether parallelization is used, peak memory consumption, and whether the reported times include generation of the posterior draws. Because computational scalability is emphasized as an advantage of the approach, even a limited empirical assessment of scaling with the number of cells and/or model terms would be valuable. Finally, the description of the analytic integration of $\gamma_{ijast}$ as borrowing from ``collapsed Gibbs sampling'' may be confusing. As presented in the appendix, integrating the Gamma-distributed rates out of the Poisson--Gamma hierarchy yields a Negative-Binomial marginal likelihood directly. If no Gibbs sampler is actually used, the terminology should be revised so that conjugate marginalization is clearly distinguished from a collapsed Gibbs algorithm.
-}
+The computational inference procedure needs a clearer and more complete description. Section 3.3 does not currently provide enough information to understand exactly how posterior inference is performed. The manuscript states that the implementation uses TMB, Laplace approximation, numerical integration, and analytic marginalization of the cell-specific rates, but it later refers to 1,000 posterior draws without explaining how these draws are obtained. Please state clearly which quantities are optimized, which quantities are integrated using the Laplace approximation, and how posterior draws of the parameters, hyperparameters, and derived quantities are generated. If an MCMC step is used at any stage, appropriate convergence and sampling-efficiency diagnostics should be reported (for example, multiple-chain diagnostics, $\widehat{R}$, effective sample sizes, and, where relevant, ESS per second). If the reported posterior draws instead arise from a Gaussian/Laplace approximation, then standard MCMC diagnostics are not applicable; in that case, the authors should explain the approximation explicitly and provide some assessment of its accuracy, ideally through comparison with a more exact posterior computation on one or more reduced-size examples. The reported runtimes are useful, but computational reporting could also be made more informative by specifying the exact processor, number of cores/threads, whether parallelization is used, peak memory consumption, and whether the reported times include generation of the posterior draws. Because computational scalability is emphasized as an advantage of the approach, even a limited empirical assessment of scaling with the number of cells and/or model terms would be valuable. Finally, the description of the analytic integration of $\gamma_{ijast}$ as borrowing from ``collapsed Gibbs sampling'' may be confusing. As presented in the appendix, integrating the Gamma-distributed rates out of the Poisson--Gamma hierarchy yields a Negative-Binomial marginal likelihood directly. If no Gibbs sampler is actually used, the terminology should be revised so that conjugate marginalization is clearly distinguished from a collapsed Gibbs algorithm.}
 \begin{response}
-% Write your response here.
+Thanks for the comment. We have added more description about computational issues in ``3.5 Computation''. \texttt{TMB} combines a Laplace approximation and numerical integration \citep{kristensen2016tmb,osgood2023statistical}. In the Laplace approximation, we maximize the log marginal posterior density with respect to the $\beta$ parameters, the hyperparameters, and $\xi$. The standard deviation parameters and 
+$\xi$ are optimized on the log scale, $\phi_1$ and $\phi_2$ on the logit scale, and the remaining components on the original scale. We then generate draws of the $\beta$ parameters, the hyperparameters, and $\xi$ 
+from a multivariate normal approximation on the transformed scale and back-transform them to the original scale. We obtain draws of $\gamma_{ijast}$ in a post-processing step.
+
+We did not provide a direct comparison between the Laplace approximation and MCMC in our paper. Instead, we point to previous studies. We state in Section 3.5: ``The Laplace approximation underlying \texttt{TMB} belongs to a broader class of approximate Bayesian inference methods that have been shown to be reliable and computationally efficient. \citet{rue2017bayesian} use integrated nested Laplace approximations (INLA) to perform approximate Bayesian inference for latent Gaussian models (LGMs), a class that includes a large proportion of the statistical models used today. They show that INLA (and the associated \texttt{R-INLA} package) performs inference within a reasonable time frame and in most cases is both faster and more accurate than MCMC alternatives. \citet{osgood2023statistical} provide a large-scale simulation study that assesses and compares \texttt{R-INLA} and \texttt{TMB} for continuous spatial models, and find that the predictive fields from both methods are comparable in most situations. We have used our package \texttt{bage} (which builds on \texttt{TMB}) for many demographic estimation and forecasting problems and find the results satisfactory, as assessed by posterior predictive checks and held-out data validation. An example can be found in \citet{bryant2026estimating}.''
+
+Regarding detailed computational reporting, we state in Section 3.5: ``Table 2 shows computation times and memory usage for the initial and expanded models. The computations were performed on a 2023 M2 MacBook Pro. No parallelization was used. The fitting process included taking 2000 draws from the posterior distribution for the $\beta$ parameters, the hyper-parameters, and $\xi$, but did not include post-processing to obtain values for the $\gamma_{ijast}$. Computations for the second extended model took around 7 times longer than those for the initial model. However, at 1531 seconds (26 minutes) these times are still fast for a high-dimensional Bayesian model.''
+
+Regarding the marginalization of $\gamma_{ijast}$, we now note in the new Section ``Model Identification and Regularization'': ``3.4 Note that the Gamma prior for 
+$\gamma_{ijast}$ conditional on $\mu_{ijast}$ in (2) is conjugate to the Poisson likelihood for $y_{ijast}$ conditional on $\gamma_{ijast}$ in (1). Consequently, integrating out $\gamma_{ijast}$ yields the negative binomial distribution...'' We also note: ``This is analogous to the marginalization strategy used in collapsed Gibbs sampling \citep{liu1994collapsed}.''
+
+Please see the corresponding sections for the changes made.
 
 \end{response}
 
 \refcomment{Major comment 4}{
-{\color{orange}{JB - heldback data tests, including description of what was done. JZ - remaining text}}
 Model comparison and, especially, forecasting validation need to be strengthened substantially. Forecasting is central to the title, abstract, and conclusions, yet the manuscript currently does not provide an out-of-sample assessment of forecast performance. WAIC and posterior predictive checks evaluate aspects of fit to the observed 2012--2024 data, but they do not establish that the model forecasts future migration rates accurately. Consequently, the statement that the model ``performs well in forecasting'' is stronger than the empirical evidence currently provided. I strongly recommend a historical forecasting or rolling-origin validation exercise. For example, the authors could fit the model using data ending in earlier years and evaluate one- through five-year-ahead forecasts against subsequently observed data. Appropriate summaries could include RMSE or MAE, predictive log scores, empirical coverage of predictive intervals, interval width, and calibration across forecast horizons. The three proposed specifications should be compared in this exercise, together with at least one simple forecasting benchmark. Such an analysis would also provide a much more direct answer to whether the additional high-order interactions improve forecasting rather than merely in-sample fit. There is also an important issue regarding the current WAIC calculation. The manuscript appears to compute pointwise predictive densities conditional on posterior draws of the observation-specific latent rates $\gamma_{ijast}$, even though these rates are marginalized during fitting and are themselves updated using the corresponding observations. The authors should justify why this conditional WAIC is aligned with the intended predictive target. For prediction of new/future cells, a marginal criterion based on the Negative-Binomial likelihood $p(y_{ijast}\mid\mu_{ijast},\xi)$ may be more relevant. In any case, time-structured out-of-sample validation would be preferable as the primary evidence for forecast performance. In addition, uncertainty in the model-comparison criterion should be reported. The manuscript currently reports only scalar WAIC values. Pointwise differences and a standard error (or an equivalent uncertainty summary) would help readers assess whether the difference between the first and second expanded models is practically meaningful.
+
 }
 \begin{response}
-% Write your response here.
+Thanks for the comment. We have added a new section, ``4.3 Held-out Data Validation'', to the manuscript. We note: ``The dataset covers the COVID-19 period, and COVID-19 had large and heterogeneous effects on migration. To assess whether our models can capture these effects, we conduct three held-out validation exercises. In the first, we hold out data for 2020–2024, during and after the COVID-19 period, and fit the models using data from 2012–2019, which does not overlap with the COVID-19 period. In the second, we hold out data for 2017–2019, which does not include the COVID-19 period, and fit the models using data from 2012–2016. In the third, we hold out data for 2022–2024 and fit the models using data from 2012–2021, which partially covers the COVID-19 period.''
 
+We also note: ``We calculate several held-out predictive performance measures: the percentage of cells in the held-out data for which the direct estimate of the migration rate, 
+$y_{ijast}/P_{ijast}$, falls within the corresponding 50\% prediction interval; the corresponding percentage for the 95\% prediction interval; the median widths of the 50\% and 95\% prediction intervals for held-out cells; and the root mean squared error across held-out cells, computed using the posterior medians of the forecasts as point predictions.''
+
+Four models are compared in the held-out validation exercises: the initial model, the two expanded models, and a main-effects model with no interactions, which serves as a simple baseline for comparison. Details of the main effects model are given in a new Section, ``3.3 Main Effects Model.''
+
+In Section ``4.1 WAIC'', we have revised the WAIC computation to use the Negative-Binomial likelihood $p(y_{ijast}\mid\mu_{ijast},\xi)$. Typically, only scalar WAIC values are reported (e.g., see Section 7.3 of \citet{Gelman2014bayesian}), and we follow this convention.
+
+Please see the corresponding sections for the changes made.
 \end{response}
 
 \section*{Referee 1: Minor comments}
 \refcomment{Minor comment 1}{
-{\color{orange}{JZ}}
 The geographic scope should be clarified. The title and manuscript repeatedly refer to the ``UK,'' whereas the nine regions listed in Section 2 appear to be the nine standard regions of England. Please reconcile the title, abstract, data description, and interpretation with the actual geographic coverage of the analysis.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. We have changed ``UK'' to ``England'' throughout the manuscript.
 \end{response}
 
 \refcomment{Minor comment 2}{
-{\color{orange}{JZ}}
-The parameterization of the Gamma distribution in Equation (2) should be stated explicitly. From the subsequent expressions, the second parameter appears to be a rate rather than a scale, but this should not be left implicit.
-}
+The parameterization of the Gamma distribution in Equation (2) should be stated explicitly. From the subsequent expressions, the second parameter appears to be a rate rather than a scale, but this should not be left implicit.}
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. After equation (2), we now note: ``where $\xi^{-1}$ and $(\xi \mu_{ijast})^{-1}$ are the shape and rate parameters, respectively, of the Gamma distribution.''
 \end{response}
 
 \refcomment{Minor comment 3}{
-{\color{orange}{JZ}}
 The AR(2) specification requires clarification. Restricting each autoregressive coefficient individually to $(-1,1)$ does not by itself guarantee stationarity of an AR(2) process. Please state whether the joint prior is restricted to the AR(2) stationarity region, particularly because the initialization and marginal-variance construction are described using Yule--Walker equations.
 }
 \begin{response}
-% Write your response here.
+Thanks for the comment.  After the description of the prior for $\phi_k$ ($k=1,2$) in Section ``3.1.2 Priors'', we now note: ``The construction of the marginal variance and the initialization via the Yule–Walker equations require the AR2 prior to be stationary. Since $-1<\phi_2<1$ is already ensured, the remaining stationarity conditions are $\phi_1+\phi_2<1$ and $\phi_2-\phi_1<1$. Although we do not impose these remaining restrictions a priori, we check the posterior draws of $\phi_1$ and $\phi_2$ and find that they satisfied these conditions.''
 
+In the new Section ``5.2 Estimates of Hyper-parameters'', we note: ``Regarding the two coefficient parameters in the AR2 prior, $\phi_1$ and $\phi_2$, Table 5 only shows their marginal estimates; but, as mentioned in Section 3.1.2, we check their posterior draws and find that the stationarity conditions for the AR2 prior are satisfied.''
+
+Please see the corresponding sections for the changes made.
 \end{response}
 
 \refcomment{Minor comment 4}{
-{\color{orange}{JZ}}
 In Equation (17), the recursion is over time, but the range below the equation appears to be written as $a=2,\ldots,A$. Presumably this should be $t=2,\ldots,T$.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. Changed.
 \end{response}
 
 \refcomment{Minor comment 5}{
-{\color{orange}{JZ}}
 Please check the indexing of the origin--destination--age--time interaction around Equation (17). There appears to be an inconsistency in which a sex index is used in one location where a time index is expected.
 }
 \begin{response}
-% Write your response here.
+Thanks for the comment. We have changed $\beta_{ijas}^{\text{orig:dest:age:time}$ to $\beta_{ijat}^{\text{orig:dest:age:time}$.}
 
 \end{response}
 
 \refcomment{Minor comment 6}{
-{\color{orange}{JZ}}
 Please check the notation for the exposure/population-at-risk quantity. It is initially defined as $w_{iast}$, since the same origin population is at risk of moving to multiple destinations, but variants with a destination index appear elsewhere.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. We have now used $P_{iast}$ as the notation for the exposure throughout the manuscript.
 \end{response}
 
 \refcomment{Minor comment 7}{
-{\color{orange}{JZ - note that the code does not actually fix initial values to zero}}
 The manuscript would benefit from a clearer discussion of identifiability and centering constraints for the large collection of main effects and interaction terms. Several components are anchored by fixing an initial element to zero, whereas others appear to rely on proper priors rather than explicit sum-to-zero constraints. The implications for interpretation of the individual effects should be explained.
 }
 \begin{response}
-% Write your response here.
+Thanks for the comment. We made a mistake in the previous version of the manuscript.  The initial values of the random walk priors are not fixed at zero, but are instead drawn from a standard normal distribution.
 
+We discuss the identification issue in the new section ``3.4 Model Identification and Regularization.'' We note: ``Proper priors ensure a proper posterior. However, since the observed migration counts $y_{ijast}$ depend on the expected rates $\mu_{ijast}$  that are linear combinations of the $\beta$ parameters,  identification of the individual $\beta$ parameters may be weak.  Fortunately, we are interested in the rates $\gamma_{ijast}$ which depend on $\mu_{ijast}$, rather than in the individual $\beta$ parameters per se.''
+
+Please see the corresponding sections for the changes made.
 \end{response}
 
 \refcomment{Minor comment 8}{
-{\color{orange}{JZ}}
 The conditional independence assumption for destination-specific migration counts sharing the same origin--age--sex--year population at risk deserves some discussion. A multinomial or competing-destination representation would also be natural. If the independent Poisson formulation is intended as an approximation, a brief justification would be helpful.
 }
 \begin{response}
-% Write your response here.
+Thanks for the comment.  In Section ``3.1.1 Counts and Rates'', we now note: ``We assume that migration counts are independent across cells and that each migration count follow a Poisson distribution,
+$$y_{ijast}\sim\text{Poisson}(\gamma_{ijast}P_{iast}),$$
+where $\gamma_{ijast}$ is the underlying migration rate. This implies that, for a given origin–age–sex–year combination, the destination-specific migration counts are independent Poisson random variables with the same population at risk. This is equivalent to specifying a Poisson distribution for the total migration count from each origin–age–sex–year combination and then, conditional on this total, specifying a multinomial distribution for the counts across competing destinations.''
 
 \end{response}
 
 \refcomment{Minor comment 9}{
-{\color{orange}{JZ}}
 The term ``sparse'' is used repeatedly. Since only a relatively small fraction of cells contain zero counts, it would be helpful to clarify that the main issue is low counts in many finely disaggregated cells rather than sparsity in the sense of a very large proportion of zeros.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. We have reframed the discussion of sparsity as an issue of low counts throughout the manuscript, except in Section ``5.1 Estimates and Forecasts of Internal Migration Rates'', where we discuss forecasts for migration rates from London to the North East. We retain the term ``sparsity'' there because 129 cells have zero migration counts from London to the North East.
 \end{response}
 
 \refcomment{Minor comment 10}{
-{\color{orange}{JZ}}
 The posterior predictive checks currently focus on the minimum, maximum, mean, and standard deviation of age-specific direct estimates. More migration-specific diagnostics could provide a more interpretable assessment of model adequacy, for example the location and magnitude of the student-migration peak, old-age behavior, temporal shocks, and the frequency of zero or very low counts.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. {\color{magenta} The maximum age-specific direct estimate is informative about the magnitude
+of the student-migration peak, while the minimum captures extreme low values and the standard deviation
+captures overall dispersion in age-specific migration. We agree that additional migration-specific diagnostics could provide a more interpretable assessment. In this revision, we have chosen to focus on out-of-sample predictive performance through held-out validation and have therefore not added further posterior predictive checks. We have added a paragraph to the Conclusion pointing to these diagnostics as a useful direction for future work.}
 \end{response}
 
 \refcomment{Minor comment 11}{
-{\color{orange}{JZ}}
 The statement that a satisfactory model should have approximately 10\% or fewer posterior predictive p-values outside the 0.05--0.95 interval is somewhat heuristic. Since posterior predictive p-values are generally not uniformly distributed, the interpretation of this threshold should be justified more carefully or softened.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. In Section ``4.2 Replicate Data Tests'', we have softened to justification: ``If the model fits the observed data well, the posterior predictive p-value can be approximately uniformly distributed in some settings, but in general its distribution tends to be more concentrated around 0.5 than a uniform distribution. Therefore, for a good model, the percentage of cells with posterior predictive p-values below 0.05 or above 0.95 is generally around 10\% or less.''
 \end{response}
 
 \refcomment{Minor comment 12}{
@@ -179,34 +198,27 @@ The statement that a satisfactory model should have approximately 10\% or fewer 
 The manuscript should quantify uncertainty in the forecast results more explicitly in the text rather than relying primarily on visual inspection of Figures 4--6.
 }
 \begin{response}
-% Write your response here.
-
+{\color{cyan}John, could you take care of this comment?}
 \end{response}
 
 \refcomment{Minor comment 13}{
-{\color{orange}{JZ}}
 The phrase ``all three models have 170,352 rate parameters'' may be slightly misleading because these cell-specific rates are analytically marginalized during fitting and subsequently generated in post-processing. It would be clearer to distinguish latent rate quantities from parameters explicitly represented in the numerical optimization.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. In Section ``3.4 Model Identification and Regularization'', we now note: ``Each of the four models involves 170,352 cell-specific migration rates ($\gamma_{ijast}$) and the dispersion parameter $\xi$. The main effects model has 125 $\beta$ parameters (e.g., $\beta^0$, $\beta_i^{\text{orig}}$) and 7 hyper-parameters (e.g., $\sigma_{\text{orig}}$); the initial model has 3,443 $\beta$ parameters and 27 hyper-parameters (e.g., $\sigma_{\text{orig}}$, $\kappa_t^{\text{time}}$); the first expanded model has 10,814 $\beta$ parameters and 28 hyper-parameters; and the second expanded model has 121,379 $\beta$ parameters and 30 hyper-parameters...Even after marginalizing over $\gamma_{ijast}$, the initial model and the two expanded models still contain a large number of $\beta$ parameters.''
 \end{response}
 
 \refcomment{Minor comment 14}{
-{\color{orange}{JZ}}
 There is a typographical error in the keyword list: ``hierarhical'' should be ``hierarchical.''
 }
 \begin{response}
-% Write your response here.
-
-\end{response}
+Thanks for the comment. Changed.\end{response}
 
 \refcomment{Closing assessment}{
 Overall, I believe the manuscript addresses a useful applied problem and has the potential to become a solid contribution, particularly if the authors sharpen the positioning of the methodological contribution and provide a convincing out-of-sample forecasting evaluation. The revisions above would substantially improve the statistical justification, transparency, and interpretation of the proposed framework.
 }
 \begin{response}
-% Write your response here.
-
+Thank you for the constructive comments. We have made substantial revisions to address them. We hope that you find the revised manuscript satisfactory.
 \end{response}
 
 \clearpage
@@ -215,8 +227,8 @@ Overall, I believe the manuscript addresses a useful applied problem and has the
 The paper proposes a Bayesian hierarchical model for estimating and forecasting internal migration rates by age and sex across different regions of the United Kingdom. I believe that the proposed framework has considerable potential and could be fruitfully applied to similar analyses in other national contexts. In addition, the mathematical structure of the model is described in considerable detail and is generally presented in a clear and accessible manner. Nonetheless, I believe that the manuscript would benefit from revision before publication. My main comments concern the need to strengthen the model validation analysis, improve the graphical presentation of some figures, add relevant references to the introduction, provide a more extensive discussion of the substantive and methodological implications of the results in the conclusion, and correct a number of issues in the bibliography. Detailed comments are provided in the following section. Broadly speaking, I consider the manuscript to represent a promising contribution to the fields of Bayesian demography and applied statistics. If the authors adequately address the comments raised below and incorporate the suggested revisions where appropriate, I believe the manuscript would be suitable for publication in Data Analytics and Topology.
 }
 \begin{response}
-% Write your response here.
-
+Thank you for your careful reading and constructive suggestions. We have carefully addressed all
+of your comments and made substantial revisions accordingly.
 \end{response}
 
 \section*{Referee 2: Detailed comments}
@@ -224,97 +236,84 @@ The paper proposes a Bayesian hierarchical model for estimating and forecasting 
 The introduction is generally well written, and the authors have done an excellent job of motivating the use of Bayesian modeling for the estimation and forecasting of internal migration rates. Nonetheless, I believe that the discussion of previous work on subnational demographic estimation and forecasting could be better supported by references, particularly in lines 3--4 on page 2. In this regard, I would suggest that the authors consider citing the following studies: \par\smallskip\noindent\textbullet\ Alexander, M., \& Alkema, L. (2022). A Bayesian cohort component projection model to estimate women of reproductive age at the subnational level in data-sparse settings. Demography, 59(5), 1713-1737. doi: https://doi.org/10.1215/00703370-10216406 (link) \par\smallskip\noindent\textbullet\ Omenti, R., Alexander, M., \& Barban, N. (2026). A Bayesian Model to Estimate Male and Female Fertility Patterns at a Subnational Level. doi: https://osf.io/preprints/socarxiv/kshr7\_v2 (link)
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment.  We have added these two references in the Introduction.
 \end{response}
 
 \refcomment{Comment 2}{
-{\color{orange}{JZ}}
 In the last two lines of the introduction paragraph on page 2, the link to the GitHub repository is missing. I suggest the authors to fix this.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. We have added the link to the GibHub repository.
 \end{response}
 
 \refcomment{Comment 3}{
-{\color{orange}{JB}}
 When presenting the main geographical areas used to compute the internal migration rates, I think it would be useful to include a map highlighting the location of the regions considered in the analysis. This would help readers who are less familiar with the geography of the country to better contextualize the spatial patterns discussed in the manuscript.
 }
 \begin{response}
-% Write your response here.
-{\color{cyan} Map added in appendix}
+Thanks for the comment. We have added a map on the regions of England in the ``Data'' section.
 \end{response}
 
 \refcomment{Comment 4}{
-{\color{orange}{JZ}}
 I did not understand the rationale behind considering the period 2012--2024. Is this choice driven by data availability, i.e., because information on internal migration flows by age and sex only became available from 2012 onward? Or are there some other reasons for choosing this specific time window? I would suggest clarifying this aspect in the ``Data'' section.
 }
 \begin{response}
-% Write your response here.
+Thanks for the comment. The choice is driven by data availability. We note in the ``Data'' section: ``detailed internal migration data are available only for 2012–2024.''
 
 \end{response}
 
 \refcomment{Comment 5}{
-{\color{orange}{JB?}}
 I would suggest reconsidering the background used in the figures. Rather than the current gray background, I would personally opt for a white background, which I find cleaner and more visually appealing and which may also improve readability.
 }
 \begin{response}
-{\color{cyan}  We have changed the plots to use a white background.}
+Thanks for the comment. We have changed the figures to use a white background.
 \end{response}
 
 \refcomment{Comment 6}{
-{\color{orange}{JZ}}
 When discussing Figure 3, I was particularly struck by the increase in migration flows from London to the East of England and the South East during the COVID-19 pandemic. What I find especially interesting is that, particularly for the South East, migration rates from London appear to have remained above their pre-pandemic levels even after the initial shock. Is there a possible explanation for this persistence? For example, it could reflect more structural changes in residential preferences, commuting patterns, or the diffusion of remote and hybrid work. I think it would be useful to add a brief discussion of this pattern in the data section.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. We have added the following paragraph towards the end of the ``Data'' section: ``As shown in Figure 1, the East of England and the South East are the two regions neighboring London. As \citet{Lange2024} points out, the shift to working from home has weakened ties to the office, and gardens and access to the outdoors have become higher priorities. Such shifts in preferences may help explain the migration patterns described above.''
 \end{response}
 
 \refcomment{Comment 7}{
-{\color{orange}{JZ?}}
 When presenting the main data model in Equation 1, I would avoid denoting the population exposure term, which is non-stochastic, by w. I would suggest using a more intuitive notation, such as P, to make its interpretation immediately clear to the readers.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. We have now used $P_{iast}$ as the notation for the exposure throughout
+the manuscript.
 \end{response}
 
 \refcomment{Comment 8}{
-{\color{orange}{JZ}}
 I find the use of the symbol $\tau$ to denote the variances of the prior distributions somewhat confusing. In the Bayesian literature, the Greek letter $\tau$ is commonly used to denote a precision parameter, i.e., the inverse of the variance. To avoid potential ambiguity, I would suggest using $\sigma^2$ to denote the prior variances.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. We now use $\sigma^2$ to denote the prior variances.
 \end{response}
 
 \refcomment{Comment 9}{
-{\color{orange}{JB}}
 I believe that the model-checking analysis has been conducted very rigorously, as has the comparison of the alternative model specifications using the well-established WAIC criterion. However, I think this section could be further improved by including an out-of-sample validation exercise. One possible approach would be to leave out the most recent observation period, for example 2022--2024, fit the models using the preceding data, and assess how closely the resulting forecasts align with the subsequently observed migration rates. Forecast accuracy could be evaluated using standard metrics, such as the mean absolute error or mean absolute relative error. In addition, I would recommend assessing the empirical coverage of the posterior predictive intervals. This would provide useful information on whether the models are not only accurate in terms of point predictions, but also appropriately calibrated.
 }
 \begin{response}
-% Write your response here.
-{\color{cyan} We have added heldback data tests}
+Thanks for the comment. We have added a new section, ``4.3 Held-out Data Validation'', to the manuscript. We note: ``The dataset covers the COVID-19 period, and COVID-19 had large and heterogeneous effects on migration. To assess whether our models can capture these effects, we conduct three held-out validation exercises. In the first, we hold out data for 2020–2024, during and after the COVID-19 period, and fit the models using data from 2012–2019, which does not overlap with the COVID-19 period. In the second, we hold out data for 2017–2019, which does not include the COVID-19 period, and fit the models using data from 2012–2016. In the third, we hold out data for 2022–2024 and fit the models using data from 2012–2021, which partially covers the COVID-19 period.''
+
+We also note: ``We calculate several held-out predictive performance measures: the percentage of cells in the held-out data for which the direct estimate of the migration rate, 
+$y_{ijast}/P_{ijast}$, falls within the corresponding 50\% prediction interval; the corresponding percentage for the 95\% prediction interval; the median widths of the 50\% and 95\% prediction intervals for held-out cells; and the root mean squared error across held-out cells, computed using the posterior medians of the forecasts as point predictions.''
+
+Four models are compared in the held-out validation exercises: the initial model, the two expanded models, and a main-effects model with no interactions, which serves as a simple baseline for comparison. Details of the main effects model are given in a new Section, ``3.3 Main Effects Model.''
 \end{response}
 
 \refcomment{Comment 10}{
-{\color{orange}{JZ}}
 In Figures 4-6, the meaning of the point estimates is not entirely clear. I assume that they represent either the posterior median or posterior mean of the estimated internal migration rates, but this should be stated explicitly in the text and figure captions.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. Posterior medians are used as point estimates and point forecasts. We have now stated this explicitly in both the text and the figure captions.
 \end{response}
 
 \refcomment{Comment 11}{
-{\color{orange}{JB}}
 Again with reference to Figures 4-6, I would recommend displaying the 95\% credible intervals not only for the forecast period, but also for the observed years 2014, 2018, and 2022. This would provide a more complete representation of the uncertainty surrounding the estimates.
 }
 \begin{response}
-% Write your response here.
-{\color{cyan} Credible intervals have been included, but are very narrow, so not visible.}
+Thanks for the comments. We have displayed the 95\% credible intervals for the observed years. Because these intervals are very narrow and largely overlap with the point estimates, they are not clearly visible in the figures.}
 \end{response}
 
 \refcomment{Comment 12}{
@@ -322,26 +321,33 @@ Again with reference to Figures 4-6, I would recommend displaying the 95\% credi
 I believe that presenting three origin--destination combinations in the main manuscript is more than sufficient. However, I would recommend reporting the results for all remaining origin--destination combinations in the appendix. This would allow interested readers to assess the robustness and generalizability of the findings across the full set of migration flows without overloading the main text.
 }
 \begin{response}
-% Write your response here.
-{\color{cyan} Plots of forecasted values for 2030 for all combinations of origin and destination included in Appendix}
+{\color{cyan}John, I think the referee is asking for figures like Figures 6-8 for all other origin-destination pairs.}
 \end{response}
 
 \refcomment{Comment 13}{
-{\color{orange}{JZ}}
 I believe that the conclusion section is currently too brief and would benefit from a more nuanced discussion of the significance and implications of the proposed methods and empirical findings. In particular, the authors could further emphasize the potential extensions of the methodological framework and discuss other settings or research questions to which the proposed approach could be applied. At the same time, I would encourage the authors to provide a more explicit discussion of the limitations of the proposed Bayesian models, including the conditions under which their performance or applicability may be constrained. Such additions would help readers better assess both the contribution and the broader applicability of the proposed framework.
 }
 \begin{response}
-% Write your response here.
+Thanks for the comment. We have now clarified in the Introduction that the Bayesian models in
+this paper are applications of a flexible Bayesian hierarchical modeling framework for estimating
+and forecasting disaggregated demographic rates, developed through more than a decade of work.
+We have also clarified that we have developed flexible and computationally efficient software for fitting, checking, and using these models.
 
+We have also added the following two paragraphs to discuss other settings or research questions to which the proposed approach could be applied, as well as the limitations of the proposed Bayesian models.
+
+``The Bayesian model developed in this paper is set within a flexible and broadly applicable Bayesian modeling framework that can be used for a wide range of disaggregated demographic estimation and forecasting applications.  Further examples of applications of the modeling framework can be found in \cite{bryant2018bayesian}, \cite{zhang2019bayesian} and \cite{bryant2026estimating}. The accompanying R package \texttt{bage} provides a computationally efficient way to fit models within the modeling framework.''
+
+``Several further challenges remain for future work. Demand for longer-term forecasts is growing, and meeting this demand would require particular attention to time-varying priors. In addition, there is greater demand for estimates at lower geographic levels, such as at the local authority level in England. If the regions are disaggregated further, the number of cells increases substantially, and fitting the models can become very challenging. Addressing these challenges would further extend the applicability of the modeling framework and its accompanying software.''
 \end{response}
 
 \refcomment{Comment 14}{
-{\color{orange}{JZ}}
 The bibliography contains several typographical and formatting inconsistencies, particularly with respect to the use of lower- and upper-case letters. These issues may originate from the formatting of the .bib file. I would therefore suggest that the authors carefully review the bibliography entries and correct any formatting errors, including missing capitalization and inconsistencies in the reported bibliographic information, such as omitted article numbers, issue numbers, or volume numbers where available.
 }
 \begin{response}
-% Write your response here.
-
+Thanks for the comment. We have carefully checked all entries and have standardized the use of upper and lower case. We have also added missing volume, issue, article and page numbers where available.
 \end{response}
+
+\bibliographystyle{apalike}
+\bibliography{references}
 
 \end{document}
