@@ -60,7 +60,7 @@ The treatment of high dimensionality, regularization, and shrinkage requires a s
 \begin{response}
 Thanks for the comment. We have added a new section, ``3.4 Model Identification and Regularization'', to the manuscript. As you point out, we do not perform sparse shrinkage or selection of interactions in the usual sense (e.g., spike-and-slab variable selection in \cite{george1993variable} or horseshoe shrinkage in \cite{carvalho2010horseshoe}). Instead, the roughness and magnitude of the specified interactions are controlled through hierarchical priors. 
 
-We have also added a new section, ``5.2 Estimates of Hyper-parameters'', to the manuscript. Table 5 there shows the point estimates and 95\% credible intervals for the hyper-parameters. Except for $\sigma_{\text{orig:dest}}$, the standard deviation parameters for the interactions are all relatively small, indicating strong regularization. 
+We have also added a new section, ``5.2 Estimates of Hyper-parameters'', to the manuscript. Table 6 there shows the point estimates and 95\% credible intervals for the hyper-parameters. Except for $\sigma_{\text{orig:dest}}$, the standard deviation parameters for the interactions are all relatively small, indicating strong regularization. 
 
 We have also added a new section, ``5.3 A Sensitivity Analysis'', to the manuscript. We conduct a sensitivity analysis with respect to the prior scale for the standard deviation parameters. In our main results, all standard deviation parameters have a prior scale of 1. We also considered prior scales of 0.1 and 0.5 and found that the estimates and forecasts of the rates were not sensitive to the choice of prior scale.
 
@@ -122,7 +122,7 @@ The AR(2) specification requires clarification. Restricting each autoregressive 
 \begin{response}
 Thanks for the comment.  After the description of the prior for $\phi_k$ ($k=1,2$) in Section ``3.1.2 Priors'', we now note: ``The construction of the marginal variance and the initialization via the Yule–Walker equations require the AR2 prior to be stationary. Since $-1<\phi_2<1$ is already ensured, the remaining stationarity conditions are $\phi_1+\phi_2<1$ and $\phi_2-\phi_1<1$. Although we do not impose these remaining restrictions a priori, we check the posterior draws of $\phi_1$ and $\phi_2$ and find that they satisfied these conditions.''
 
-In the new Section ``5.2 Estimates of Hyper-parameters'', we note: ``Regarding the two coefficient parameters in the AR2 prior, $\phi_1$ and $\phi_2$, Table 5 only shows their marginal estimates; but, as mentioned in Section 3.1.2, we check their posterior draws and find that the stationarity conditions for the AR2 prior are satisfied.''
+In the new Section ``5.2 Estimates of Hyper-parameters'', we note: ``Regarding the two coefficient parameters in the AR2 prior, $\phi_1$ and $\phi_2$, Table 6 only shows their marginal estimates; but, as mentioned in Section 3.1.2, we check their posterior draws and find that the stationarity conditions for the AR2 prior are satisfied.''
 
 Please see the corresponding sections for the changes made.
 \end{response}
@@ -194,11 +194,10 @@ Thanks for the comment. In Section ``4.2 Replicate Data Tests'', we have softene
 \end{response}
 
 \refcomment{Minor comment 12}{
-{\color{orange}{JB}}
 The manuscript should quantify uncertainty in the forecast results more explicitly in the text rather than relying primarily on visual inspection of Figures 4--6.
 }
 \begin{response}
-{\color{cyan}We had added a new table (Table 5) giving estimates and forecasts of the Total Migration Rate, together with credible intervals. These credible intervals quantify the increase in uncertainty when moving from estimate to forecasts, and as the length of the forecast increases.}
+Thanks for the comment. {\color{magenta}In Section ``5.1 Estimates and Forecasts of Internal Migration Rates,''} {\color{cyan}we had added a new table (Table 5) giving estimates and forecasts of the Total Migration Rate, together with credible intervals. These credible intervals quantify the increase in uncertainty when moving from estimate to forecasts, and as the length of the forecast increases.}
 \end{response}
 
 \refcomment{Minor comment 13}{
@@ -317,11 +316,10 @@ Thanks for the comments. We have displayed the 95\% credible intervals for the o
 \end{response}
 
 \refcomment{Comment 12}{
-{\color{orange}{JB}}
 I believe that presenting three origin--destination combinations in the main manuscript is more than sufficient. However, I would recommend reporting the results for all remaining origin--destination combinations in the appendix. This would allow interested readers to assess the robustness and generalizability of the findings across the full set of migration flows without overloading the main text.
 }
 \begin{response}
-{\color{cyan}We felt that showing graphs equivalent to Figures 6-8 for all 56 origin-destination pairs would be more than readers would want, and would make it difficult for them to see overall patterns. We have instead elected to show results for all origin-destination pairs for the final year of the forecasts, separately for males and females. We chose the final year of the forecasts because obtaining sensible results for this year is the most challenging part of the estimation and forecasting process. We hope that this allows the readers to assess robustness and generalizability.}
+Thanks for the comment. {\color{cyan}We felt that showing graphs equivalent to Figures 6-8 for all 56 origin-destination pairs would be more than readers would want, and would make it difficult for them to see overall patterns. We have instead elected to show results for all origin-destination pairs for the final year of the forecasts, separately for males and females. {\color{magenta}Please see Figures 9-10 in Appendix A.} We chose the final year of the forecasts because obtaining sensible results for this year is the most challenging part of the estimation and forecasting process. We hope that this allows the readers to assess robustness and generalizability.}
 \end{response}
 
 \refcomment{Comment 13}{
